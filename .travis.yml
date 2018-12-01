@@ -1,18 +1,18 @@
 language: node_js
 node_js:
-  - "stable"
+- stable
 cache:
   directories:
-    - node_modules
+  - node_modules
 python:
-  - "3.5"
+- '3.5'
 install:
-  - pip install --user awscli
+- pip install --user awscli
 script:
-  - npm install
-  - npm run eslint
-  - npm run csslint
-  - npm run test-ci
-  - ./deploy-to-s3.sh
+- npm install
+- npm run eslint
+- npm run csslint
+- npm run test-ci
+- "./deploy-to-s3.sh"
 env:
-  secure: "ckgvvjJXVak0KcKyf+bj6EKbGHkUyIIHsJvVqEOy5rB9As1mrfOXgOqJHndKQLd1Dpc5PV8fLwKfA6P99rnXKmfd5EtCAq4mkYmcrA7mwikQ8LN3o1uTaepr/EgPiEdlMGBnoU/lu5V7pcgxz4qsKJc/UK2ITYIZKQf49roj6k37b5CV6tlT8eByFm29ci2/x9YaixD+dqBqWhn/rwdg6zofWI29eW3vOQbJvsMGnOS98/25YLZTGWfYlgI0lLtPgq0g/7KW1qK3/WkIwz76gtDJo5q0Weg8BZAU93UJpHpFR/AZF59uP+kG6JYq0mOuKmpws2j6vuyi8HKivZ0SHvq6jQHaVIf+e+BHkmI4gATuw+1Ou/Ed0nfUW610oJyaLjQXCBN7q7p23+wzSGZuZ0ui56dwdHqiYRgGLcSS50zY7jpZ1ZJbgntsNxWhpZHqrDsAeElYNjdnM/EbVd4UNN6rswb5K2WFCc5P42zBJWre9miIL4EPeS3FjyOeVG+Kot5fzwK5segO6V5OwPleQuOETDzQdCqRaSNYdlq3R7P8k63SYBOuHXsTSBDxSveF14lREz2dw8SCSGnXJn8ofZj1olnWbqgFNXY7YI4JdMhzw+ce8CnVUscAEEbW3X4gMUKAL6fKzm/Qaua0INXfDiuCniZUxwXocCKby8UbyG8="
+  secure: Vspr16DJctz1qWHvo5ESxL9fHhcEUHbzMlUOQT7jIH+7B/ISTuOiMSIawn3ebuz5ma7ZG544loIL3nTFNfFVmW1AtIajZrBEKe+MyUfvGyjjTVOl4y5Cw/ATufgQtmIuXdGLN1SySM3kSw95xzxjNJWih/Tbhb2MXTVTF4gYGFYjN3RgRHjK+BWFYDsRr5DzOzWRJ3wKeQYXaH4P2C5BFAsTopeJAd7KRd+qUG5/hKfNbEgUyrpVGJfj5VCTzAgTciANVry5PXKhLW6SWLtq5HiTqhjb/VDLUentVxh823XLK3NyDJEIasE39ErbgbwESz0RRHughpmK8QE4Kp5c4/MhKCSxC+SxYTld3C7PS0WuJEf+zUfA5H+MAUO1UTR+Tmaxew2vDaSnnrPAJadym2R88tnVNUTWrGESUlrvK2d187SeeKS89vrqcBvfXKVOe4YmO7nzLWZEmC4NfOG//0F+WTpuhssxFv8tzQ3ovWv1t9gseQejH+zj2ATtQxfNz+V2yp2S/XMYlpa2Q9l5A/aFBi1BLSlS279wU91VR5vbCrHsmgvw2SGZtS/3mEgaDBQfE7G2pHx84At0yu6jEtTL3QqMFzOIErBLgRgvdutfO3P8d4uVvGDoKfktozgkRKonLROSzcWOJGWjbNRrDjDIKiTfK3w4sp+76VKgwKw=
