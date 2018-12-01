@@ -1,0 +1,51 @@
+{
+  "name": "juhani.mobi",
+  "version": "0.0.1",
+  "dependencies": {
+    "classnames": "^2.2.5",
+    "eslint-plugin-react": "^7.11.1",
+    "prop-types": "^15.5.10",
+    "raven-js": "^3.22.2",
+    "react": "^16.6.3",
+    "react-addons-css-transition-group": "^15.6.0",
+    "react-dom": "^16.6.3",
+    "react-ga": "^2.4.1",
+    "react-redux": "^5.0.6",
+    "react-router": "^4.1.2",
+    "react-router-dom": "^4.1.2",
+    "react-scripts": "^2.1.1",
+    "react-sortable-hoc": "^0.6.7",
+    "redux": "^3.7.2",
+    "redux-storage": "^4.1.2",
+    "redux-storage-engine-localstorage": "^1.1.4",
+    "redux-thunk": "^2.3.0"
+  },
+  "scripts": {
+    "start": "NODE_PATH=src/ react-scripts start",
+    "build": "NODE_PATH=src/ react-scripts build",
+    "deploy": "yarn build && ./deploy-to-s3.sh",
+    "test": "NODE_PATH=src/ react-scripts test --env=jsdom",
+    "test-ci": "CI=true NODE_PATH=src/ react-scripts test --env=jsdom",
+    "eslint": "eslint src/*.js src/**/*.js src/**/*.jsx",
+    "eslint-fix": "eslint src/*.js src/**/*.js src/**/*.jsx --fix",
+    "csslint": "stylelint src/*.css src/**/*.css",
+    "csslint-fix": "stylelint src/*.css src/**/*.css --fix",
+    "eject": "react-scripts eject"
+  },
+  "pre-commit": [
+    "eslint",
+    "csslint",
+    "test-ci"
+  ],
+  "devDependencies": {
+    "pre-commit": "^1.2.2",
+    "stylelint": "^9.8.0",
+    "stylelint-config-standard": "^18.2.0"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
+}

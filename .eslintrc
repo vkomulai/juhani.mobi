@@ -1,0 +1,32 @@
+{
+  "parserOptions": {
+    "ecmaFeatures": {
+        "jsx": true,
+        "modules": true
+    }
+  },
+  "settings": {
+    "react": {
+      "version": "16.6.3"
+    }
+  },
+  "parser": "babel-eslint",
+  "plugins": [
+      "react"
+  ],
+  "extends": [
+      "eslint:recommended",
+      "plugin:react/recommended"
+  ],
+  "rules": {
+     "no-set-state": "off",
+     "semi": [2, "never"],
+     "quotes": ["error", "single"],
+     "comma-dangle": ["error", "never"]
+  },
+  "env": {
+    "browser": true,
+    "node": true,
+    "jest": true
+  }
+}

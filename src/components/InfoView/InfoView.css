@@ -1,0 +1,54 @@
+.info-text {
+  font-size: 15px;
+  padding-left: 10px;
+  width: 30ch;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.info-view {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+  background-color: #d1c4e9;
+  min-height: 60px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  width: 100%;
+}
+
+.icon-container {
+  width: 40px;
+}
+
+.info-icon-normal {
+  animation: unset;
+}
+
+#info-icon {
+  display: block;
+  margin: auto;
+  max-height: 40px;
+  max-width: 40px;
+  width: 40px;
+  height: 40px;
+}
+
+.info-area {
+  display: flex;
+  flex-direction: row;
+  background-color: #ede7f6;
+  min-height: 40px;
+  width: 80%;
+  border: 1px dashed #673ab7;
+  border-radius: 5px;
+}
+
+.listening {
+  background-color: #90ee90;
+}
+
+.speech-not-supported {
+  background-color: #ffc0cb;
+}

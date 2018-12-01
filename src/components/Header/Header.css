@@ -1,0 +1,12 @@
+.header {
+  background-color: #673ab7;
+  color: #fff;
+  min-height: 40px;
+}
+
+.title {
+  padding-top: 4px;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  font-weight: 900;
+}

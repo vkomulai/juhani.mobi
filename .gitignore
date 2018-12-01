@@ -1,0 +1,13 @@
+# IDE
+.vscode
+.DS_Store
+
+# Runtime data
+pids
+*.pid
+*.seed
+npm-debug.log
+
+# Build dirs
+node_modules/
+build/
