@@ -3,7 +3,11 @@ node_js:
   - "stable"
 cache:
   directories:
-  - node_modules
+    - node_modules
+python:
+  - "3.5"
+install:
+  - pip install --user awscli
 script:
   - npm install
   - npm run eslint
