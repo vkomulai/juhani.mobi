@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 S3_BUCKET=www.juhani.mobi
-CLOUDFRONT_DUSTRIBUTION_ID=E1ELZ7PM43LC4Z
+CLOUDFRONT_DUSTRIBUTION_ID=E2PYOCTIIDESQS
 npm run build
 cd build/
 # TODO:Force flag to invalidation
