@@ -13,13 +13,18 @@ install:
 jobs:
   include:
     - stage: test and lint
+      name: eslint
       script: npm run eslint
     - stage: test and lint
+      name: csslint
       script: npm run csslint
     - stage: test and lint
+      name: tests
       script: npm run test-ci
     - stage: deploy
+      name: deploy to production
       if: branch = master
       script: ./deploy-to-s3.sh
-env:
-  secure: Vspr16DJctz1qWHvo5ESxL9fHhcEUHbzMlUOQT7jIH+7B/ISTuOiMSIawn3ebuz5ma7ZG544loIL3nTFNfFVmW1AtIajZrBEKe+MyUfvGyjjTVOl4y5Cw/ATufgQtmIuXdGLN1SySM3kSw95xzxjNJWih/Tbhb2MXTVTF4gYGFYjN3RgRHjK+BWFYDsRr5DzOzWRJ3wKeQYXaH4P2C5BFAsTopeJAd7KRd+qUG5/hKfNbEgUyrpVGJfj5VCTzAgTciANVry5PXKhLW6SWLtq5HiTqhjb/VDLUentVxh823XLK3NyDJEIasE39ErbgbwESz0RRHughpmK8QE4Kp5c4/MhKCSxC+SxYTld3C7PS0WuJEf+zUfA5H+MAUO1UTR+Tmaxew2vDaSnnrPAJadym2R88tnVNUTWrGESUlrvK2d187SeeKS89vrqcBvfXKVOe4YmO7nzLWZEmC4NfOG//0F+WTpuhssxFv8tzQ3ovWv1t9gseQejH+zj2ATtQxfNz+V2yp2S/XMYlpa2Q9l5A/aFBi1BLSlS279wU91VR5vbCrHsmgvw2SGZtS/3mEgaDBQfE7G2pHx84At0yu6jEtTL3QqMFzOIErBLgRgvdutfO3P8d4uVvGDoKfktozgkRKonLROSzcWOJGWjbNRrDjDIKiTfK3w4sp+76VKgwKw=
+      env:
+        secure: Vspr16DJctz1qWHvo5ESxL9fHhcEUHbzMlUOQT7jIH+7B/ISTuOiMSIawn3ebuz5ma7ZG544loIL3nTFNfFVmW1AtIajZrBEKe+MyUfvGyjjTVOl4y5Cw/ATufgQtmIuXdGLN1SySM3kSw95xzxjNJWih/Tbhb2MXTVTF4gYGFYjN3RgRHjK+BWFYDsRr5DzOzWRJ3wKeQYXaH4P2C5BFAsTopeJAd7KRd+qUG5/hKfNbEgUyrpVGJfj5VCTzAgTciANVry5PXKhLW6SWLtq5HiTqhjb/VDLUentVxh823XLK3NyDJEIasE39ErbgbwESz0RRHughpmK8QE4Kp5c4/MhKCSxC+SxYTld3C7PS0WuJEf+zUfA5H+MAUO1UTR+Tmaxew2vDaSnnrPAJadym2R88tnVNUTWrGESUlrvK2d187SeeKS89vrqcBvfXKVOe4YmO7nzLWZEmC4NfOG//0F+WTpuhssxFv8tzQ3ovWv1t9gseQejH+zj2ATtQxfNz+V2yp2S/XMYlpa2Q9l5A/aFBi1BLSlS279wU91VR5vbCrHsmgvw2SGZtS/3mEgaDBQfE7G2pHx84At0yu6jEtTL3QqMFzOIErBLgRgvdutfO3P8d4uVvGDoKfktozgkRKonLROSzcWOJGWjbNRrDjDIKiTfK3w4sp+76VKgwKw=
+
