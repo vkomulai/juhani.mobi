@@ -73,15 +73,24 @@ describe('tokenizeWords', () => {
     expect(tokenizeWords(input)).toMatchObject(output)
   }),
 
-  it('can tokenize descriptive words into one entit', () => {
+  it('can tokenize descriptive words into one entity', () => {
     const input = 'yksi mansikka'
     const output = [{ name: '1 mansikka', collected: false }]
     expect(tokenizeWords(input)).toMatchObject(output)
   }),
 
-  it('can tokenize complex descriptive words into one entity', () => {
+  it('can tokenize word with two descriptive words into one entity', () => {
     const input = 'puoli kiloa mansikoita'
     const output = [{ name: '1/2 kiloa mansikoita', collected: false }]
+    expect(tokenizeWords(input)).toMatchObject(output)
+  })
+
+  it('can tokenize two descriptive inputs into two entities ', () => {
+    const input = 'puoli kiloa mansikoita 5 omenaa'
+    const output = [
+      { name: '1/2 kiloa mansikoita', collected: false },
+      { name: '5 omenaa', collected: false }
+    ]
     expect(tokenizeWords(input)).toMatchObject(output)
   })
 })

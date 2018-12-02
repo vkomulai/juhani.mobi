@@ -42,7 +42,6 @@ const knownUnrecognizedWords = {
   'skype' : 'skyr'
 }
 
-
 export const supportSpeechRecognition = () =>  'webkitSpeechRecognition' in window
 
 export const isOnline = () =>  navigator.onLine
@@ -73,11 +72,11 @@ export const startListening = (onRecognized) => {
   recognition.onspeechend = () => onRecognized(recognizedItems)
 }
 
-export const tokenizeWords = (words) =>  {
+export const tokenizeWords = words =>  {
   const tokenizedRawWords = words.split(' ')
   return tokenizedRawWords.reduce((tokenized, word) => {
     if (!alreadyRecognized(word, tokenized)) {
-      const prevWord = tokenized.length > 0 ? tokenized[tokenized.length - 1].name : null
+      const prevWord = tokenized.length > 0 ? tokenized[tokenized.length - 1].name.split(' ').slice(-1)[0] : null
       const newItem = { name: correctRecognitionErrors(word), collected: false }
       if (isQuantityWord(prevWord) || isAdjectiveWord(prevWord)) {
         newItem.name = prependQuantityFromPrevious(newItem, tokenized)
