@@ -1,18 +1,16 @@
 # Juhani.mobi -  A voice driven shopping list
 
-![](public/icons/android/android-launchericon-192-192.png?raw=true)
+![juhani icon](public/icons/android/android-launchericon-192-192.png?raw=true)
 
 - Juhani is my little voice driven helper for creating a shopping list
 - This is an experiment on how browser's `webkitSpeechRecognition` can be used as speech recognition API
-- This used to be a my personal learning project for react/redux back in the days and to familiarize myself with PWA's
+- This used to be a my personal learning project back in the days and to familiarize myself with PWA's and browser's Web Speech API
 - Intent is to optimize my personal grocery shopping experience
-
-
 
 ## Story of Juhani
 
 - My family consists of four people and a cat. That means quite a lot of effort goes into managing groceries. With a voice driven app I can create a grocery list in a matter of seconds. Initially this was supposed to be a math game, but the idea pivoted quite early.
-- Name of the app is Juhani, because that happens to be the name of my kind-of brother-in-law who is very helpful. Thanks Juhani, again. 
+- Name of the app is Juhani, because that happens to be the name of my kind-of brother-in-law who is very helpful. Thanks Juhani, again
 
 ## Tricks Juhani can do (on Androind phones)
 
@@ -20,6 +18,8 @@
 - Detect combinations of quantitative words, adjectives and nouns into one item on list. For example, "5 litraa maitoa" or "puoli kiloa mansikoita"
 - Re-ordering of items using Drag and Drop
 - Push collected items to the end of the list
+
+![juhani preview](video-preview.gif?raw=true)
 
 ## Future ideas
 
@@ -40,7 +40,7 @@
 
 - Run Locally
 
-```
+```bash
 npm install
 npm start
 open localhost:3000
@@ -50,7 +50,8 @@ open localhost:3000
 - Eslint `npm run eslint` and `npm run eslint-fix` to autofix
 - Csslint `npm run csslint` and `npm run csslint-fix` to autofix
 
-## Deployment (AWS S3)
+## CI and Deployment (AWS S3 + Cloudfront)
 
-- From travis-CI on master branch changes
-- Run locally using `./deploy-to-s3.sh`
+- Travis-CI [https://travis-ci.org/vkomulai/juhani.mobi](https://travis-ci.org/vkomulai/juhani.mobi)
+- Deployment on master branch changes
+- Deploy locally using `./deploy-to-s3.sh`
