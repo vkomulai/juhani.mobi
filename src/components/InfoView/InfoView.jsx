@@ -1,18 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
+import robotWaiting from './robot-waiting.png'
+import robotListening from './robot-listening.png'
 import './InfoView.css'
 
 export const InfoView = ({ emptyShoppingList, listening, isSpeechRecognitionSupported, isOnline }) => {
   const { mainText, subText } = getInfoText(listening, emptyShoppingList, isSpeechRecognitionSupported, isOnline) 
   return (
-    <div className='info-view' >
+    <div className="info-view" >
       <div className={classNames('mui-panel info-area', { listening, 'speech-not-supported': !isSpeechRecognitionSupported || !isOnline})} >
         <div className="icon-container">
-          <img id="info-icon"
-              alt="info-icon"
+          <img id="info-icon" alt="info-icon"
               className={listening ? 'info-icon-listening' : 'info-icon-normal'}
-              src={listening ? 'icons/robot-listening.png' : 'icons/robot-waiting.png'} />
+              src={listening ? robotListening : robotWaiting} />
         </div>
         <div className="info-text">
           { mainText }<br/>
@@ -21,7 +22,6 @@ export const InfoView = ({ emptyShoppingList, listening, isSpeechRecognitionSupp
       </div>
     </div>)
 }
-
 
 const getInfoText = (listening, emptyShoppingList, isSpeechRecognitionSupported, isOnline) => {
   if (!isOnline) {
