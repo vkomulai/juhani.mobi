@@ -12,7 +12,7 @@
 - My family consists of four people and a cat. That means quite a lot of effort goes into managing groceries. With a voice driven app I can create a grocery list in a matter of seconds. Initially this was supposed to be a math game, but the idea pivoted quite early.
 - Name of the app is Juhani, because that happens to be the name of my kind-of brother-in-law who is very helpful. Thanks Juhani, again
 
-## Tricks Juhani can do (on Androind phones)
+## Tricks Juhani can do (on Android phones)
 
 - Detect Finnish words and place them to list
 - Detect combinations of quantitative words, adjectives and nouns into one item on list. For example, "5 litraa maitoa" or "puoli kiloa mansikoita"
