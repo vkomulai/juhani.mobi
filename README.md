@@ -55,3 +55,10 @@ open localhost:3000
 - Travis-CI [https://travis-ci.org/vkomulai/juhani.mobi](https://travis-ci.org/vkomulai/juhani.mobi)
 - Deployment on master branch changes
 - Deploy locally using `./deploy-to-s3.sh`
+
+
+## Changelog
+
+### 1.0.1 / 13.01.2019
+
+- Added suport for sharing the list using Web Share API: https://developers.google.com/web/updates/2016/09/navigator-share

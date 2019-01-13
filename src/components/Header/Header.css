@@ -2,6 +2,7 @@
   background-color: #673ab7;
   color: #fff;
   min-height: 40px;
+  position: relative;
 }
 
 .title {
@@ -9,4 +10,11 @@
   margin: 0;
   -webkit-font-smoothing: antialiased;
   font-weight: 900;
+}
+
+.header img {
+  height: 20px;
+  position: absolute;
+  top: 10px;
+  right: 20px;
 }
