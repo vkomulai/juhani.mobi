@@ -1,6 +1,5 @@
 import React from 'react'
 import { 
-  Header, 
   ListArea,
   Buttons 
 } from 'components'
@@ -8,7 +7,8 @@ import {
   EmptyButton,
   AddButton,
   ShoppingList,
-  InfoArea
+  InfoArea,
+  Header
 } from 'containers'
 
 export const App = () => (

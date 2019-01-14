@@ -1,7 +1,6 @@
 import React from 'react'
 import './index.css'
 
-export { Header } from './Header/Header.jsx'
 export { Button } from './Button/Button.jsx'
 export { InfoView } from './InfoView/InfoView.jsx'
 export { SortableList } from './SortableList/SortableList.jsx'
