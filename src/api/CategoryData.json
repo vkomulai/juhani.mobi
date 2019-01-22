@@ -1,0 +1,47 @@
+[
+  {
+    "name": "hevi",
+    "order": 1,
+    "items": ["banaani"]
+  },
+  {
+    "name": "leivät",
+    "order": 2,
+    "items": []
+  },
+  {
+    "name": "lihatuotteet",
+    "order": 3,
+    "items": []
+  },
+  {
+    "name": "maitotuotteet",
+    "order": 4,
+    "items": []
+  },
+  {
+    "name": "kuivatuotteet",
+    "order": 5,
+    "items": []
+  },
+  {
+    "name": "säilykkeet",
+    "order": 6,
+    "items": []
+  },
+  {
+    "name": "juomat",
+    "order": 7,
+    "items": []
+  },
+  {
+    "name": "pakasteet",
+    "order": 8,
+    "items": []
+  },
+  {
+    "name": "taloustarvikkeet ja pesuaineet",
+    "order": 9,
+    "items": ["hammastahna", "pesuaine", "talouspaperi", "wc-paperi"]
+  }
+]
