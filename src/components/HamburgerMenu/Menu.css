@@ -1,0 +1,36 @@
+
+.bm-cross {
+  background-color: white;
+}
+
+.bm-menu {
+  background-color: #673ab7;
+  padding: 10px;
+}
+
+.bm-burger-bars {
+  background-color: white;
+  border-radius: 5px;
+}
+
+.bm-item {
+  outline-width: 0;
+  color: white;
+  font-size: 2rem;
+}
+
+hr {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.bm-burger-button {
+  margin: 10px;
+  position: absolute;
+  width: 20px;
+  height: 20px;
+}
+
+.item > * {
+  font-size: 1.5rem;
+}

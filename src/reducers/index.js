@@ -10,8 +10,10 @@ import {
   READY_PRESSED,
   REMOVE_ITEM,
   ONBOARDING_COMPLETED,
-  ONLINE_CHANGED
+  ONLINE_CHANGED,
+  SORT_CHANGED
 } from '../actions'
+import { getItemOrder } from 'api/MarketCategories'
 
 //  Ugly haxxx for local env
 const DEFAULT_ITEMS = location && location.hostname !== 'localhost' ? //  eslint-disable-line
@@ -35,6 +37,7 @@ const DEFAULT_ITEMS = location && location.hostname !== 'localhost' ? //  eslint
   }]
 
 const NOT_LISTENING = false
+const SORT_AUTOMATICALLY_ENABLED = true
 
 const listening = (state = NOT_LISTENING, action) => {
   switch (action.type) {
@@ -77,7 +80,13 @@ const shoppingItems = (state = DEFAULT_ITEMS, action) => {
     case ITEMS_REORDERED:
       return arrayMove(state, action.oldIndex, action.newIndex)
     case ITEMS_LISTENED:
-      return _.unionBy(state, action.recognizedItems, 'name')
+      
+      const items = _.unionBy(state, action.recognizedItems, 'name') //  eslint-disable-line
+      return items.sort((a, b) => {
+        const aGroupOrder = getItemOrder(a.name)
+        const bGroupOrder = getItemOrder(b.name)
+        return aGroupOrder - bGroupOrder
+      })
     default:
       return state
   }
@@ -97,7 +106,16 @@ const onBoardingCompleted = (state = false, action) => {
     case ONBOARDING_COMPLETED:
       return !state
     default:
-      return false
+      return state
+  }
+}
+
+const sortAutomatically = (state = SORT_AUTOMATICALLY_ENABLED, action) => {
+  switch (action.type) {
+    case SORT_CHANGED:
+      return !state
+    default:
+      return state
   }
 }
 
@@ -106,6 +124,7 @@ const shoppingApp = combineReducers({
   listening,
   isSpeechRecognitionSupported,
   onBoardingCompleted,
-  isOnline
+  isOnline,
+  sortAutomatically
 })
 export default shoppingApp

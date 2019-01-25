@@ -8,11 +8,14 @@ import {
   AddButton,
   ShoppingList,
   InfoArea,
-  Header
+  Header,
+  ApplicationMenu
 } from 'containers'
+
 
 export const App = () => (
   <>
+    <ApplicationMenu />
     <Header />
     <InfoArea />
     <ListArea>

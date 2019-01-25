@@ -6,6 +6,7 @@ export const READY_PRESSED = 'READY_PRESSED'
 export const REMOVE_ITEM = 'REMOVE_ITEM'
 export const ONBOARDING_COMPLETED = 'ONBOARDING_COMPLETED'
 export const ONLINE_CHANGED = 'ONLINE_CHANGED'
+export const SORT_CHANGED = 'SORT_CHANGED'
 
 export const addItemPressed = () => ({ type: ADD_ITEM_PRESSED })
 
@@ -20,6 +21,8 @@ export const removeItemPressed = (item) => ({ type: REMOVE_ITEM, item })
 export const readyPressed = () => ({ type: READY_PRESSED })
 
 export const onboardingCompleted = () => ({ type: ONBOARDING_COMPLETED })
+
+export const sortAutomaticallyChanged = () => ({ type: SORT_CHANGED })
 
 export const listenToWindowEvent = (eventName) => {
   return (dispatch) => window.addEventListener(eventName, () => {
