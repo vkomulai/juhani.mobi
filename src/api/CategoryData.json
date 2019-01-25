@@ -12,7 +12,7 @@
   {
     "name": "lihatuotteet",
     "order": 3,
-    "items": ["jauheliha", "kana"]
+    "items": ["jauheliha", "kana", "leikkele"]
   },
   {
     "name": "maitotuotteet",
@@ -32,7 +32,7 @@
   {
     "name": "juomat",
     "order": 7,
-    "items": []
+    "items": ["coca-cola"]
   },
   {
     "name": "pakasteet",
