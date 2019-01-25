@@ -2,22 +2,22 @@
   {
     "name": "hevi",
     "order": 1,
-    "items": ["banaani"]
+    "items": ["banaani", "omena"]
   },
   {
     "name": "leivät",
     "order": 2,
-    "items": []
+    "items": ["ruisleipä", "vaalealeipä"]
   },
   {
     "name": "lihatuotteet",
     "order": 3,
-    "items": []
+    "items": ["jauheliha", "kana"]
   },
   {
     "name": "maitotuotteet",
     "order": 4,
-    "items": []
+    "items": ["maito", "juusto", "margariini", "voi"]
   },
   {
     "name": "kuivatuotteet",
@@ -27,7 +27,7 @@
   {
     "name": "säilykkeet",
     "order": 6,
-    "items": []
+    "items": ["ananas", "tomaattimurska"]
   },
   {
     "name": "juomat",
@@ -37,7 +37,7 @@
   {
     "name": "pakasteet",
     "order": 8,
-    "items": []
+    "items": ["mansikka", "mustikka", "puolukka"]
   },
   {
     "name": "taloustarvikkeet ja pesuaineet",
