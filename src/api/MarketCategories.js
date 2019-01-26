@@ -8,7 +8,6 @@ const init = () => {
     shouldSort: true,
     includeScore: true,
     threshold: 0.3,
-
     keys: ['items']
   }
   fuzzySearch = new Fuse(data, options)
