@@ -10,7 +10,16 @@ export const SORT_CHANGED = 'SORT_CHANGED'
 
 export const addItemPressed = () => ({ type: ADD_ITEM_PRESSED })
 
-export const itemsRecognized = (recognizedItems) => ({ type: ITEMS_LISTENED, recognizedItems })
+export const itemsRecognized = (recognizedItems) => {
+  return (dispatch, getState) => {
+    const { sortAutomatically } = getState()
+    dispatch({
+      type: ITEMS_LISTENED,
+      recognizedItems,
+      sortAutomatically
+    })
+  }
+}  
 
 export const itemsReOrdered = (oldIndex, newIndex) => ({ type: ITEMS_REORDERED, oldIndex, newIndex })
 

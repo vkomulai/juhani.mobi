@@ -81,7 +81,9 @@ const shoppingItems = (state = DEFAULT_ITEMS, action) => {
       return arrayMove(state, action.oldIndex, action.newIndex)
     case ITEMS_LISTENED:
       const items = _.unionBy(state, action.recognizedItems, 'name') //  eslint-disable-line
-      return items.sort((a, b) => getItemOrder(a.name) - getItemOrder(b.name))
+      return action.sortAutomatically ? 
+        items.sort((a, b) => getItemOrder(a.name) - getItemOrder(b.name)) : 
+        items
     default:
       return state
   }
