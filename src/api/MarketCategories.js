@@ -7,7 +7,7 @@ const init = () => {
   var options = {
     shouldSort: true,
     includeScore: true,
-    threshold: 0.3,
+    threshold: 0.3, //  threshold 0.0 : 100% match,  threshold 1.0 : very unlikely match
     keys: ['items']
   }
   fuzzySearch = new Fuse(data, options)
