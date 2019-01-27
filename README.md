@@ -59,6 +59,10 @@ open localhost:3000
 
 ## Changelog
 
+### 1.1.0 / 27.01.2019
+
+- Added suport for sorting list automatically according to market configuration
+
 ### 1.0.1 / 13.01.2019
 
 - Added suport for sharing the list using Web Share API: https://developers.google.com/web/updates/2016/09/navigator-share
