@@ -6,6 +6,7 @@ import {
 describe('getItemOrder', () =>
   it('returns order for known items with exact match', () => {
     expect(getItemOrder('banaani')).toBe(1)
+    expect(getItemOrder('salaatti')).toBe(1)
     expect(getItemOrder('pesuaine')).toBe(9)
     expect(getItemOrder('hammastahna')).toBe(9)
     expect(getItemOrder('mansikka')).toBe(8)
@@ -21,7 +22,6 @@ describe('getItemOrder', () =>
 
   it('returns order rder number for last for unknown items', () => {
     expect(getItemOrder('not_known_item')).toBe(ORDER_LAST)
-    expect(getItemOrder('salaatti')).toBe(ORDER_LAST)
 
   })
 )

@@ -2,7 +2,7 @@
   {
     "name": "hevi",
     "order": 1,
-    "items": ["banaani", "omena"]
+    "items": ["hedelmä (ruoka)", "hedelmä", "ananas", "ananaskirsikka", "karviaiskoiso", "annoona", "appelsiini (hedelmä)", "aprikoosi", "avokado", "banaani", "cantaloupemeloni", "durio", "feijoa", "galiameloni", "granaattiomena", "granadilla", "greippi", "guava", "hunajameloni", "jakkihedelmä", "intianleipäpuu", "kaki", "kaktusviikuna", "karambola", "jalokastanja", "keittobanaani", "keltainen kiivi", "keltapassio", "kiivi (hedelmä)", "kirsikka (hedelmä)", "kirsikkaluumu", "kiwai", "japaninlaikkuköynnös", "kivakurkku", "kookospähkinä", "kumkvatti", "kvitteni", "limetti", "limkvatti", "litsi", "longaani", "luumu", "mandariini", "mango (hedelmä)", "mangostaani", "meloni", "nashi", "nektariini", "omena", "omenapuut", "oliivi", "papaija", "passionhedelmä", "persikka", "pepino", "pikkusitrukset", "klementiini", "pitahaya", "pomelo", "pähkinä", "päärynä", "rambutaani", "rumeliini", "sapodilla","sapotillapuu", "salaki", "sitruuna", "sokerimeloni", "sweetie", "taateli", "välimerentaateli", "tamarillo", "tomaatti", "verkkomeloni", "vesimeloni", "aitoviikuna", "viinirypäle", "viiniköynnökset", "banaani", "omena", "vihannes", "viljelykasvi", "hedelmä", "marja", "juuri", "varsi", "lehti (kasvitiede)", "kukinto", "kurkkukasvit", "hernekasvit", "palko", "yrtti","juures", "bataatti", "kaurajuuri", "lanttu", "maa-artisokka", "mustajuuri", "nauris", "palsternakka", "persilja", "juuripersilja", "peruna", "piparjuuri", "porkkana", "punajuurikas", "retiisi", "selleri", "mukulaselleri", "vesikastanja", "endiivi", "euroopanmerikaali", "fenkoli", "kaali", "keräkaali", "kiinankaali", "kurttukaali", "kyssäkaali", "lehtikaali", "punakaali", "ruusukaali", "kardoni", "keltasipuli", "salottisipuli", "lamopinaatti", "lehtimangoldi", "persilja", "pillisipuli", "pinaatti", "pinaattihierakka", "purjo", "raparperi", "ruoholaukka", "ruokaparsa", "lehtisalaatti","jäävuorisalaatti", "sareptansinappi", "selleri", "lehtiselleri", "sikuri", "sinappikaali", "tarhamaltsa", "valkosipuli", "vesikrassi", "vihanneskrassi", "vihannesportulakka", "vuonankaali", "herne", "härkäpapu", "jättikurpitsa", "kaali", "kukkakaali", "parsakaali", "kurkku", "kurpitsa", "kesäkurpitsa", "spagettikurpitsa", "latva-artisokka", "maissi", "munakoiso", "okra", "paprika", "parsaherne", "tarhapapu", "tomaatti", "kirsikkatomaatti"]
   },
   {
     "name": "leivät",
@@ -10,38 +10,38 @@
     "items": ["ruisleipä", "vaalealeipä"]
   },
   {
-    "name": "lihatuotteet",
+    "name": "liha ja eines",
     "order": 3,
-    "items": ["jauheliha", "kana", "leikkele"]
+    "items": ["jauheliha", "kana", "leikkele", "kinkku", "kalkkuna", "nakki", "makkara", "nauta", "possu", "härkis", "mifu", "pinaattiletut", "porkkanaletut", "lihaperunasoselaatikko"]
   },
   {
     "name": "maitotuotteet",
     "order": 4,
-    "items": ["maito", "juusto", "margariini", "voi"]
+    "items": ["maito", "margariini", "voi", "juusto", "rahka", "skyr", "jogurtti", "feta", "kananmunat", "mansikkakeitto", "mustikkakeitto"]
   },
   {
     "name": "kuivatuotteet",
     "order": 5,
-    "items": []
+    "items": ["riisi", "pasta", "nuudeli", "lasagne", "puuro", "sokeri", "jauhot", "kahvi", "tee", "rusina", "kaakao", "kaurajuoma", "couscous", "ketsuppi"]
   },
   {
     "name": "säilykkeet",
     "order": 6,
-    "items": ["ananas", "tomaattimurska"]
+    "items": ["ananas", "tomaattimurska", "tomaattipyre", "tonnikala", "oliivi", "pesto", "soija", "oliiviöjly", "salaattikastike"]
   },
   {
     "name": "juomat",
     "order": 7,
-    "items": ["coca-cola"]
+    "items": ["vichy", "tuoremehu", "mehu", "cokis", "sprite", "olut", "siideri"]
   },
   {
     "name": "pakasteet",
     "order": 8,
-    "items": ["mansikka", "mustikka", "puolukka"]
+    "items": ["mansikka", "mansikat", "mustikka", "mustikat", "puolukka", "puolukat", "jäätelö", "kalapuikot", "nugetit", "piirakat"]
   },
   {
     "name": "taloustarvikkeet ja pesuaineet",
     "order": 9,
-    "items": ["hammastahna", "pesuaine", "talouspaperi", "wc-paperi"]
+    "items": ["hammastahna", "pesuaine", "talouspaperi", "wc-paperi", "vitamiinit"]
   }
 ]
