@@ -52,7 +52,7 @@ const listening = (state = NOT_LISTENING, action) => {
 
 const isSpeechRecognitionSupported = () => supportSpeechRecognition()
 
-const shoppingItems = (state = DEFAULT_ITEMS, action) => {
+export const shoppingItems = (state = DEFAULT_ITEMS, action) => {
   switch (action.type) {
     case REMOVE_ITEM:
       return state.filter(v => v.name !== action.item.name)

@@ -2,6 +2,9 @@
 .vscode
 .DS_Store
 
+# Code coverage
+coverage/
+
 # Runtime data
 pids
 *.pid

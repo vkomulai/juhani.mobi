@@ -27,7 +27,7 @@
     "build": "NODE_PATH=src/ react-scripts build",
     "deploy": "yarn build && ./deploy-to-s3.sh",
     "test": "NODE_PATH=src/ react-scripts test --env=jsdom",
-    "test-ci": "CI=true NODE_PATH=src/ react-scripts test --env=jsdom",
+    "test-ci": "CI=true NODE_PATH=src/ react-scripts test --env=jsdom --coverage",
     "eslint": "eslint src/*.js src/**/*.js src/**/*.jsx",
     "eslint-fix": "eslint src/*.js src/**/*.js src/**/*.jsx --fix",
     "csslint": "stylelint src/*.css src/**/*.css",
@@ -40,6 +40,7 @@
     "test-ci"
   ],
   "devDependencies": {
+    "codecov": "^3.1.0",
     "pre-commit": "^1.2.2",
     "stylelint": "^9.8.0",
     "stylelint-config-standard": "^18.2.0",
