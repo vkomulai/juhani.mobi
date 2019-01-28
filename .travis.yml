@@ -12,19 +12,21 @@ install:
 - npm install
 jobs:
   include:
-    - stage: test and lint
-      name: eslint
-      script: npm run eslint
-    - stage: test and lint
-      name: csslint
-      script: npm run csslint
-    - stage: test and lint
-      name: tests
-      script: npm run test-ci
-    - stage: deploy
-      name: deploy to production
-      if: branch = master
-      script: ./deploy-to-s3.sh
-      env:
-        secure: Vspr16DJctz1qWHvo5ESxL9fHhcEUHbzMlUOQT7jIH+7B/ISTuOiMSIawn3ebuz5ma7ZG544loIL3nTFNfFVmW1AtIajZrBEKe+MyUfvGyjjTVOl4y5Cw/ATufgQtmIuXdGLN1SySM3kSw95xzxjNJWih/Tbhb2MXTVTF4gYGFYjN3RgRHjK+BWFYDsRr5DzOzWRJ3wKeQYXaH4P2C5BFAsTopeJAd7KRd+qUG5/hKfNbEgUyrpVGJfj5VCTzAgTciANVry5PXKhLW6SWLtq5HiTqhjb/VDLUentVxh823XLK3NyDJEIasE39ErbgbwESz0RRHughpmK8QE4Kp5c4/MhKCSxC+SxYTld3C7PS0WuJEf+zUfA5H+MAUO1UTR+Tmaxew2vDaSnnrPAJadym2R88tnVNUTWrGESUlrvK2d187SeeKS89vrqcBvfXKVOe4YmO7nzLWZEmC4NfOG//0F+WTpuhssxFv8tzQ3ovWv1t9gseQejH+zj2ATtQxfNz+V2yp2S/XMYlpa2Q9l5A/aFBi1BLSlS279wU91VR5vbCrHsmgvw2SGZtS/3mEgaDBQfE7G2pHx84At0yu6jEtTL3QqMFzOIErBLgRgvdutfO3P8d4uVvGDoKfktozgkRKonLROSzcWOJGWjbNRrDjDIKiTfK3w4sp+76VKgwKw=
+  - stage: test and lint
+    name: eslint
+    script: npm run eslint
+  - stage: test and lint
+    name: csslint
+    script: npm run csslint
+  - stage: test and lint
+    name: tests
+    script: npm run test-ci
+    env:
+      secure: fZEzLsRI4/ch5q6TcZcza2DSCgv9YQROgwSXshEacYQzMTc0bvx0+GzPfI3XAE9cbKuCnLsMylQaypYAApqkJkWx2aGWGjW7naZru0wCw7IU2X7rrI4ul8xmcmInXifj1E9kqrFJBXn5GSCzN8ggDDrFDv5OhHJbIxDhMJ7BXdpZ2bLV2hohWC75l2JxfnXg7hOAKbFv0mOCu9usjBIDhPraV9itcLZIwahMUKGJufoLnRzWBAcK7sYlgyOmHmE41RqBLwlDyhauyBEYEKIMYcNox0uRtL/dCyqVeGNOhOzC0DP8ljyQdUthml+lMGhRben+UTJdeB/AtmW2ezsm6gEUHu83SLc8EMNTMMX0IHpY8ie/IgrVVWAtOI0Kl8+0Us/uDXHI3GsN+nafpwI9bUvDyEN3Zf54dcb43QfrfMccA9jHyboJMnmTpr1uVT5M8yMd/g3VLmbr141CL3FzNrGEUD8Sq7i5NqrkPkPJT80k7XwCvBJMDmQb2G++DDJNtqBXOdJC4ZEMhcqspGqVvyJxrug1vEvm6HMn50Eqwv6LuCkI0sCSICzhtIE8rOYdCGWjLZsZXyhXs8nXlyppNv58PSep0E1Hq1cnY7dBgtFAJwA1AmbOFQhw6Et5mdiZqAwDE5xxgwST+sJvvhbLbyunY4aP0bn9OL//Hj/lI5k=
+  - stage: deploy
+    name: deploy to production
+    if: branch = master
+    script: ./deploy-to-s3.sh
+    env:
+      secure: Vspr16DJctz1qWHvo5ESxL9fHhcEUHbzMlUOQT7jIH+7B/ISTuOiMSIawn3ebuz5ma7ZG544loIL3nTFNfFVmW1AtIajZrBEKe+MyUfvGyjjTVOl4y5Cw/ATufgQtmIuXdGLN1SySM3kSw95xzxjNJWih/Tbhb2MXTVTF4gYGFYjN3RgRHjK+BWFYDsRr5DzOzWRJ3wKeQYXaH4P2C5BFAsTopeJAd7KRd+qUG5/hKfNbEgUyrpVGJfj5VCTzAgTciANVry5PXKhLW6SWLtq5HiTqhjb/VDLUentVxh823XLK3NyDJEIasE39ErbgbwESz0RRHughpmK8QE4Kp5c4/MhKCSxC+SxYTld3C7PS0WuJEf+zUfA5H+MAUO1UTR+Tmaxew2vDaSnnrPAJadym2R88tnVNUTWrGESUlrvK2d187SeeKS89vrqcBvfXKVOe4YmO7nzLWZEmC4NfOG//0F+WTpuhssxFv8tzQ3ovWv1t9gseQejH+zj2ATtQxfNz+V2yp2S/XMYlpa2Q9l5A/aFBi1BLSlS279wU91VR5vbCrHsmgvw2SGZtS/3mEgaDBQfE7G2pHx84At0yu6jEtTL3QqMFzOIErBLgRgvdutfO3P8d4uVvGDoKfktozgkRKonLROSzcWOJGWjbNRrDjDIKiTfK3w4sp+76VKgwKw=
 
