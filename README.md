@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/vkomulai/juhani.mobi.svg?branch=master)](https://travis-ci.org/vkomulai/juhani.mobi)
+
+[![codecov](https://codecov.io/gh/vkomulai/juhani.mobi/branch/master/graph/badge.svg)](https://codecov.io/gh/vkomulai/juhani.mobi)
+
 # Juhani.mobi -  A voice driven shopping list
 
 ![juhani icon](public/icons/android/android-launchericon-192-192.png?raw=true)
