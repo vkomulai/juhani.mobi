@@ -41,7 +41,11 @@
   ],
   "devDependencies": {
     "codecov": "^3.1.0",
+    "enzyme": "^3.8.0",
+    "enzyme-adapter-react-16": "^1.8.0",
+    "jest-enzyme": "^7.0.1",
     "pre-commit": "^1.2.2",
+    "react-test-renderer": "^16.7.0",
     "stylelint": "^9.8.0",
     "stylelint-config-standard": "^18.2.0",
     "wtf_wikipedia": "^7.2.8"
