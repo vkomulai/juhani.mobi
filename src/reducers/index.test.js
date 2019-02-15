@@ -3,7 +3,8 @@ import {
   ITEMS_LISTENED,
   REMOVE_ITEM,
   ITEMS_REORDERED,
-  READY_PRESSED
+  READY_PRESSED,
+  COLLECTED_ITEM_PRESSED
 } from 'actions'
 
 const STATE_EMPTY  = []
@@ -82,6 +83,44 @@ describe('shoppingApp', () => {
       expect(newState[0].name).toBe('wc-paperi')
       expect(newState[1].name).toBe('sipuli')
       expect(newState[2].name).toBe('saippua')
+    })
+
+    it('collects first item and moves to last', () => {
+      const collectItem = {
+        type: COLLECTED_ITEM_PRESSED,
+        item: {
+          name: 'sipuli',
+          collected: true
+        }
+      }
+
+      const newState = shoppingItems(STATE_SIPULI_SAIPPUA_WCPAPERI, collectItem)
+      expect(newState.length).toBe(3)
+      expect(newState[0].name).toBe('saippua')
+      expect(newState[0].collected).toBe(false)
+      expect(newState[1].name).toBe('wc-paperi')
+      expect(newState[1].collected).toBe(false)
+      expect(newState[2].name).toBe('sipuli')
+      expect(newState[2].collected).toBe(true)
+    })
+
+    it('collects last item and leaves as last', () => {
+      const collectItem = {
+        type: COLLECTED_ITEM_PRESSED,
+        item: {
+          name: 'wc-paperi',
+          collected: true
+        }
+      }
+
+      const newState = shoppingItems(STATE_SIPULI_SAIPPUA_WCPAPERI, collectItem)
+      expect(newState.length).toBe(3)
+      expect(newState[0].name).toBe('sipuli')
+      expect(newState[0].collected).toBe(false)
+      expect(newState[1].name).toBe('saippua')
+      expect(newState[1].collected).toBe(false)
+      expect(newState[2].name).toBe('wc-paperi')
+      expect(newState[2].collected).toBe(true)
     })
 
   })
