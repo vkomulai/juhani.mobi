@@ -50,6 +50,7 @@
     "stylelint-config-standard": "^18.2.0",
     "wtf_wikipedia": "^7.2.8"
   },
+  "proxy": "http://localhost:4000",
   "browserslist": [
     ">0.2%",
     "not dead",
