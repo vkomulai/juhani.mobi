@@ -1,19 +1,111 @@
 service:
   name: aws-nodejs-typescript
 
-# Add the serverless-webpack plugin
 plugins:
   - serverless-webpack
+  - serverless-plugin-warmup
+  - serverless-domain-manager
+  - serverless-dynamodb-local
   - serverless-offline
 
 provider:
   name: aws
   runtime: nodejs8.10
+  region: us-east-1
+  usagePlan:
+    quota:
+      limit: 50000
+      offset: 2
+      period: MONTH
+    throttle:
+      burstLimit: 200
+      rateLimit: 100
+  environment:
+    prod_api_host: api
+    dev_api_host: api-dev
+    RECIPES_TABLE: Recipes-${opt:stage, self:provider.stage}
+  iamRoleStatements:
+    - Effect: Allow
+      Action: # Create this table first
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: 'arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.RECIPES_TABLE}'
+    - Effect: Allow
+      Action:
+        - 'lambda:InvokeFunction'
+      Resource:
+      - Fn::Join:
+        - ':'
+        - - arn:aws:lambda
+          - Ref: AWS::Region
+          - Ref: AWS::AccountId
+          - function:${self:service}-${opt:stage, self:provider.stage}-*
+
+custom:
+  customDomain:
+    domainName: ${self:provider.environment.${opt:stage, 'dev'}_api_host}.juhani.mobi
+    certificateName: ${self:provider.environment.${opt:stage, 'dev'}_api_host}.juhani.mobi
+    createRoute53Record: true
+    basePath: ''
+    stage: ${opt:stage, 'dev'}
+    endpointType: 'regional'
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+      seed: true
+      convertEmptyValues: true
+  warmup:
+    default: prod
+    folderName: '_warmup' # Name of the folder created for the generated warmup  
+    cleanFolder: false
+    memorySize: 128
+    name: 'make-them-pop'
+    schedule: 'cron(0/5 7-22 ? * MON-FRI *)'
+    timeout: 20
+    prewarm: true # ·Warmup after deployment 
+    tags:
+      Application: ${self:service}
+
+resources:
+  Resources:
+    RecipesDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: RecipeUrl
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: RecipeUrl
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.RECIPES_TABLE}
 
 functions:
-  hello:
-    handler: handler.hello
+  api:
+    handler: src/server.handler
+    warmup: true
     events:
       - http:
-          method: get
-          path: hello
+          path: /
+          method: ANY
+          cors: true
+          private: false
+      - http:
+          path: /{any+}
+          method: ANY
+          cors: true
+          private: false
