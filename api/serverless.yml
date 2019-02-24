@@ -47,6 +47,8 @@ provider:
           - function:${self:service}-${opt:stage, self:provider.stage}-*
 
 custom:
+  serverless-offline:
+    port: 4000
   customDomain:
     domainName: ${self:provider.environment.${opt:stage, 'dev'}_api_host}.juhani.mobi
     certificateName: ${self:provider.environment.${opt:stage, 'dev'}_api_host}.juhani.mobi

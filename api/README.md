@@ -20,7 +20,7 @@ npm run start:local-dynamodb-gui
 npm run start:local-api
 
 # test service
-curl -i -d "url=https://www.kotikokki.net/reseptit/nayta/574/Maailman%20paras%20pannukakku/" -X POST http://localhost:3000/recipe
+curl -i -d "url=https://www.kotikokki.net/reseptit/nayta/574/Maailman%20paras%20pannukakku/" -X POST http://localhost:4000/recipe
 ```
 
 ## Setting up custom domain and initial deployment
