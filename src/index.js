@@ -13,7 +13,10 @@ import {
   initializeAnalytics,
   sendApplicationLoadedEvent
  } from './api/Analytics'
-import { listenToWindowEvent } from './actions'
+import { 
+  listenToWindowEvent,
+  listenToShareTargetEvent
+ } from './actions'
 
 const engine = createEngine('juhani.mobi')
 const middleware = storage.createMiddleware(engine)
@@ -24,6 +27,8 @@ const reducer = storage.reducer(shoppingApp)
 const store = createStoreWithMiddleware(reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
 store.dispatch(listenToWindowEvent('offline'))
 store.dispatch(listenToWindowEvent('online'))
+store.dispatch(listenToShareTargetEvent())
+
 
 load(store)
 initializeAnalytics()
