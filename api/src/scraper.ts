@@ -7,11 +7,13 @@ const kotikokkiMapping = {
     data: {
       amount: {
         selector: "span",
-        eq: 0
+        eq: 0,
+        convert: (val: String) => val ? val : '-'
       },
-      ingredient: {
+      name: {
         selector: ".name span",
-        eq: 0
+        eq: 0,
+        convert: (val: String) => val ? val : '-'
       }
     }
   }
