@@ -22,6 +22,12 @@ const sendAnalyticsEvent = (eventName, eventValue) => {
   }
 }
 
+export const sendClientError = (error) => {
+  Raven.captureMessage(error, {
+    level: 'error' // one of 'info', 'warning', or 'error'
+  })
+}
+
 export const initializeAnalytics = () => {
   if (isProduction || process.envs.REACT_APP_SIMULATE_ANALYTICS_PRODUCTION  ) {
     ReactGA.initialize(config.ga)  
