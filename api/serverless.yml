@@ -70,31 +70,31 @@ custom:
     folderName: '_warmup' # Name of the folder created for the generated warmup  
     cleanFolder: false
     memorySize: 128
-    name: 'make-them-pop'
+    name: warmpup-juhani-api-${opt:stage, 'dev'}
     schedule: 'cron(0/5 7-22 ? * MON-FRI *)'
     timeout: 20
     prewarm: true # ·Warmup after deployment 
     tags:
       Application: ${self:service}
 
-resources:
-  Resources:
-    RecipesDynamoDbTable:
-      Type: 'AWS::DynamoDB::Table'
-      DeletionPolicy: Retain
-      Properties:
-        AttributeDefinitions:
-          -
-            AttributeName: RecipeUrl
-            AttributeType: S
-        KeySchema:
-          -
-            AttributeName: RecipeUrl
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-        TableName: ${self:provider.environment.RECIPES_TABLE}
+# resources:
+#   Resources:
+#     RecipesDynamoDbTable:
+#       Type: 'AWS::DynamoDB::Table'
+#       DeletionPolicy: Retain
+#       Properties:
+#         AttributeDefinitions:
+#           -
+#             AttributeName: RecipeUrl
+#             AttributeType: S
+#         KeySchema:
+#           -
+#             AttributeName: RecipeUrl
+#             KeyType: HASH
+#         ProvisionedThroughput:
+#           ReadCapacityUnits: 1
+#           WriteCapacityUnits: 1
+#         TableName: ${self:provider.environment.RECIPES_TABLE}
 
 functions:
   api:
