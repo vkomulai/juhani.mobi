@@ -3,10 +3,10 @@ import * as scraper from './scraper'
 import * as db from './database'
 
 const api = express.Router()
-api.post('/recipe', async (req: express.Request, res: express.Response) => {
-  const url: String = req.body.url
+api.get('/recipe', async (req: express.Request, res: express.Response) => {
+  const url: String = req.query.url
   if (!url) {
-    res.status(400).json({error: 'Missing POST parameter "url"'})
+    res.status(400).json({error: 'Missing Query parameter "url"'})
   } else {
     try {
       let recipe = await db.find(url)
