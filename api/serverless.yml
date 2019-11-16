@@ -6,12 +6,11 @@ plugins:
   - serverless-domain-manager
   - serverless-dynamodb-local
   - serverless-offline
-environment:
-  HTTP_BASIC_AUTH: "${ssm:/juhani.mobi/BASIC_AUTH_USER}"
-  HTTP_BASIC_PASSWORD: "${ssm:/juhani.mobi/BASIC_AUTH_PASSWORD~}"
+
 provider:
   name: aws
   runtime: nodejs8.10
+  memorySize: 256
   region: us-east-1
   usagePlan:
     quota:
@@ -22,6 +21,8 @@ provider:
       burstLimit: 200
       rateLimit: 100
   environment:
+    BASIC_AUTH_USER: ${ssm:/juhani.mobi/BASIC_AUTH_USER}
+    BASIC_AUTH_PASSWORD: ${ssm:/juhani.mobi/BASIC_AUTH_PASSWORD~true}
     prod_api_host: api
     dev_api_host: api-dev
     RECIPES_TABLE: "Recipes-${opt:stage, self:provider.stage}"
@@ -36,9 +37,9 @@ provider:
         - "dynamodb:PutItem"
         - "dynamodb:UpdateItem"
         - "dynamodb:DeleteItem"
-      Resource: >-
-        arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.RECIPES_TABLE}
-        arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.CATEGORY_TABLE}
+      Resource:
+        - arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.RECIPES_TABLE}
+        - arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.CATEGORY_TABLE}
     - Effect: Allow
       Action:
         - "lambda:InvokeFunction"
