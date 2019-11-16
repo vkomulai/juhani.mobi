@@ -7,7 +7,7 @@ plugins:
   - serverless-dynamodb-local
   - serverless-offline
 environment:
-  HTTP_BASIC_AUTH: "${ssm:/juhani.mobi/BASIC_AUTH_USER~}"
+  HTTP_BASIC_AUTH: "${ssm:/juhani.mobi/BASIC_AUTH_USER}"
   HTTP_BASIC_PASSWORD: "${ssm:/juhani.mobi/BASIC_AUTH_PASSWORD~}"
 provider:
   name: aws
@@ -38,6 +38,7 @@ provider:
         - "dynamodb:DeleteItem"
       Resource: >-
         arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.RECIPES_TABLE}
+        arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.CATEGORY_TABLE}
     - Effect: Allow
       Action:
         - "lambda:InvokeFunction"
