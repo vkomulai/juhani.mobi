@@ -20,6 +20,7 @@
     "aws-sdk": "^2.409.0",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
+    "express-basic-auth": "^1.2.0",
     "lodash": "^4.17.11",
     "scrape-it": "^5.1.4",
     "serverless-http": "^1.9.1",
