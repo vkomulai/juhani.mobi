@@ -17,7 +17,7 @@ describe('getItemOrder', () =>
     expect(getItemOrder('leipä')).toBe(2)
     expect(getItemOrder('mansikat')).toBe(8)
     expect(getItemOrder('puolukat')).toBe(8)
-    expect(getItemOrder('leikkeleet')).toBe(2)
+    expect(getItemOrder('leikkeleet')).toBe(3)
   }),
 
   it('returns order rder number for last for unknown items', () => {

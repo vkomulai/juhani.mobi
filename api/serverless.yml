@@ -74,7 +74,7 @@ custom:
     cleanFolder: false
     memorySize: 128
     name: "warmpup-juhani-api-${opt:stage, 'dev'}"
-    schedule: cron(0/5 7-22 ? * MON-FRI *)
+    schedule: cron(0/5 7-22 ? * * *)
     timeout: 20
     prewarm: true
     tags:
