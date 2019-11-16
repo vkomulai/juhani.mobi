@@ -1,13 +1,14 @@
 service:
   name: aws-nodejs-typescript
-
 plugins:
   - serverless-webpack
   - serverless-plugin-warmup
   - serverless-domain-manager
   - serverless-dynamodb-local
   - serverless-offline
-
+environment:
+  HTTP_BASIC_AUTH: "${ssm:/juhani.mobi/BASIC_AUTH_USER~}"
+  HTTP_BASIC_PASSWORD: "${ssm:/juhani.mobi/BASIC_AUTH_PASSWORD~}"
 provider:
   name: aws
   runtime: nodejs8.10
@@ -23,39 +24,40 @@ provider:
   environment:
     prod_api_host: api
     dev_api_host: api-dev
-    RECIPES_TABLE: Recipes-${opt:stage, self:provider.stage}
+    RECIPES_TABLE: "Recipes-${opt:stage, self:provider.stage}"
+    CATEGORY_TABLE: "Categories-${opt:stage, self:provider.stage}"
   iamRoleStatements:
     - Effect: Allow
-      Action: # Create this table first
-        - dynamodb:DescribeTable
-        - dynamodb:Query
-        - dynamodb:Scan
-        - dynamodb:GetItem
-        - dynamodb:PutItem
-        - dynamodb:UpdateItem
-        - dynamodb:DeleteItem
-      Resource: 'arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.RECIPES_TABLE}'
+      Action:
+        - "dynamodb:DescribeTable"
+        - "dynamodb:Query"
+        - "dynamodb:Scan"
+        - "dynamodb:GetItem"
+        - "dynamodb:PutItem"
+        - "dynamodb:UpdateItem"
+        - "dynamodb:DeleteItem"
+      Resource: >-
+        arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.RECIPES_TABLE}
     - Effect: Allow
       Action:
-        - 'lambda:InvokeFunction'
+        - "lambda:InvokeFunction"
       Resource:
-      - Fn::Join:
-        - ':'
-        - - arn:aws:lambda
-          - Ref: AWS::Region
-          - Ref: AWS::AccountId
-          - function:${self:service}-${opt:stage, self:provider.stage}-*
-
+        - "Fn::Join":
+            - ":"
+            - - "arn:aws:lambda"
+              - Ref: "AWS::Region"
+              - Ref: "AWS::AccountId"
+              - "function:${self:service}-${opt:stage, self:provider.stage}-*"
 custom:
   serverless-offline:
     port: 4000
   customDomain:
-    domainName: ${self:provider.environment.${opt:stage, 'dev'}_api_host}.juhani.mobi
-    certificateName: ${self:provider.environment.${opt:stage, 'dev'}_api_host}.juhani.mobi
+    domainName: "${self:provider.environment.${opt:stage, 'dev'}_api_host}.juhani.mobi"
+    certificateName: "${self:provider.environment.${opt:stage, 'dev'}_api_host}.juhani.mobi"
     createRoute53Record: true
-    basePath: ''
-    stage: ${opt:stage, 'dev'}
-    endpointType: 'regional'
+    basePath: ""
+    stage: "${opt:stage, 'dev'}"
+    endpointType: regional
   dynamodb:
     stages:
       - dev
@@ -67,35 +69,15 @@ custom:
       convertEmptyValues: true
   warmup:
     default: prod
-    folderName: '_warmup' # Name of the folder created for the generated warmup  
+    folderName: _warmup
     cleanFolder: false
     memorySize: 128
-    name: warmpup-juhani-api-${opt:stage, 'dev'}
-    schedule: 'cron(0/5 7-22 ? * MON-FRI *)'
+    name: "warmpup-juhani-api-${opt:stage, 'dev'}"
+    schedule: cron(0/5 7-22 ? * MON-FRI *)
     timeout: 20
-    prewarm: true # ·Warmup after deployment 
+    prewarm: true
     tags:
-      Application: ${self:service}
-
-# resources:
-#   Resources:
-#     RecipesDynamoDbTable:
-#       Type: 'AWS::DynamoDB::Table'
-#       DeletionPolicy: Retain
-#       Properties:
-#         AttributeDefinitions:
-#           -
-#             AttributeName: RecipeUrl
-#             AttributeType: S
-#         KeySchema:
-#           -
-#             AttributeName: RecipeUrl
-#             KeyType: HASH
-#         ProvisionedThroughput:
-#           ReadCapacityUnits: 1
-#           WriteCapacityUnits: 1
-#         TableName: ${self:provider.environment.RECIPES_TABLE}
-
+      Application: "${self:service}"
 functions:
   api:
     handler: src/server.handler
@@ -107,7 +89,7 @@ functions:
           cors: true
           private: false
       - http:
-          path: /{any+}
+          path: "/{any+}"
           method: ANY
           cors: true
           private: false
