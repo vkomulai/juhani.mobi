@@ -28,8 +28,8 @@ export const sendClientError = (error) => {
   })
 }
 
-export const sendUnknownIngredient = (ingredient) => {
-  Raven.captureMessage(`Unknown ingredient added to list ${ingredient}`, {
+export const sendUnknownItems = (items) => {
+  Raven.captureMessage(`Unknown items added to list: [${items.join(',')}]`, {
     level: 'info' // one of 'info', 'warning', or 'error'
   })
 }

@@ -1,6 +1,7 @@
 import {
   getItemOrder,
-  ORDER_LAST
+  getItemsWithUnknownOrder,
+  UNKNOWN_ITEM_ORDER
 } from './MarketCategories'
 
 describe('getItemOrder', () =>
@@ -21,7 +22,14 @@ describe('getItemOrder', () =>
   }),
 
   it('returns order rder number for last for unknown items', () => {
-    expect(getItemOrder('not_known_item')).toBe(ORDER_LAST)
+    expect(getItemOrder('not_known_item')).toBe(UNKNOWN_ITEM_ORDER)
 
+  })
+)
+
+describe('getItemsWithUnknownOrder', () =>
+  it('returns only unknown items', () => {
+    const items = [{ name: 'banaani' }, { name: 'kampiakseli' }, { name: 'kampiakseli' }, { name: 'tunkki' }, { name: 'maito' }]
+    expect(getItemsWithUnknownOrder(items)).toEqual(['kampiakseli', 'tunkki'])
   })
 )

@@ -1,11 +1,15 @@
 import { scrapeRecipe } from 'api/RecipeScrapeAPI'
-import { 
+import {
   sendItemsRecognizedEvent,
-  sendClientError
+  sendClientError,
+  sendUnknownItems
 } from 'api/Analytics'
+import { getItemsWithUnknownOrder } from 'api/MarketCategories'
+
 
 export const ADD_ITEM_PRESSED = 'ADD_ITEM_PRESSED'
 export const ITEMS_LISTENED = 'ITEMS_LISTENED'
+export const ANALYZE_ITEMS = 'ANALYZE_ITEMS'
 export const ITEMS_REORDERED = 'ITEMS_REORDERED'
 export const COLLECTED_ITEM_PRESSED = 'COLLECTED_ITEM_PRESSED'
 export const READY_PRESSED = 'READY_PRESSED'
@@ -25,8 +29,12 @@ export const itemsRecognized = (recognizedItems) => {
       recognizedItems,
       sortAutomatically
     })
+    const unknownItems = getItemsWithUnknownOrder(recognizedItems)
+    if (unknownItems.length > 0) {
+      sendUnknownItems(unknownItems)
+    }
   }
-}  
+}
 
 export const itemsReOrdered = (oldIndex, newIndex) => ({ type: ITEMS_REORDERED, oldIndex, newIndex })
 

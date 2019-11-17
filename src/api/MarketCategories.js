@@ -4,7 +4,7 @@ import { sendClientError } from '../api/Analytics'
 import testData from 'api/CategoryData.json'
 
 export const fetchCategoryData = () => {
-  if (location == 'http://localhost/') {
+  if (location == 'http://localhost/') {//  eslint-disable-line
     return Promise.resolve(testData)  //  Ugly hack, fix this later
   }
 
@@ -32,12 +32,16 @@ const init = () => {
     fuzzy = new Fuse(categories, options)
   })
 }
-
 init()
 
-export const ORDER_LAST = 99999
-
+export const UNKNOWN_ITEM_ORDER = 99999
 export const getItemOrder = (item) => {
   const match = fuzzy.search(item)
-  return _.get(match, '[0].item.order', ORDER_LAST)
+  return _.get(match, '[0].item.order', UNKNOWN_ITEM_ORDER)
+}
+
+export const getItemsWithUnknownOrder = (items) => {
+  return _.uniq(items
+    .filter(item => getItemOrder(item.name) === UNKNOWN_ITEM_ORDER)
+    .map(item => item.name))
 }
