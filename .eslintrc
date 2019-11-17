@@ -1,8 +1,8 @@
 {
   "parserOptions": {
     "ecmaFeatures": {
-        "jsx": true,
-        "modules": true
+      "jsx": true,
+      "modules": true
     }
   },
   "settings": {
@@ -12,19 +12,20 @@
   },
   "parser": "babel-eslint",
   "plugins": [
-      "react"
+    "react"
   ],
   "extends": [
-      "eslint:recommended",
-      "plugin:react/recommended"
+    "eslint:recommended",
+    "plugin:react/recommended"
   ],
   "rules": {
-     "no-set-state": "off",
-     "semi": [2, "never"],
-     "quotes": ["error", "single"],
-     "comma-dangle": ["error", "never"]
+    "no-set-state": "off",
+    "semi": [2, "never"],
+    "quotes": ["error", "single"],
+    "comma-dangle": ["error", "never"]
   },
   "env": {
+    "es6": true,
     "browser": true,
     "node": true,
     "jest": true

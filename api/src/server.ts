@@ -3,8 +3,7 @@ import * as bodyParser from 'body-parser'
 import * as express from 'express'
 import api from './routes'
 
-//  @ts-ignore: disable-next-line
-const corsMiddleware = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+const corsMiddleware = (_req: express.Request, res: express.Response, next: express.NextFunction) => {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
   next()
