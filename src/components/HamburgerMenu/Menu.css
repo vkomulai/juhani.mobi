@@ -1,4 +1,3 @@
-
 .bm-cross {
   background-color: white;
 }
@@ -31,6 +30,11 @@ hr {
   height: 20px;
 }
 
-.item > * {
+.item>* {
   font-size: 1.5rem;
+}
+
+.version {
+  border-top: 1px solid #ffffff;
+  margin-top: 5rem;
 }

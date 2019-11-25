@@ -2,7 +2,18 @@
 set -e
 S3_BUCKET=www.juhani.mobi
 CLOUDFRONT_DUSTRIBUTION_ID=E2PYOCTIIDESQS
+
+# Create versionInfo file
+DATE=`date +"%d.%m.%Y %T %Z"`
+COMMIT=`git rev-parse --short HEAD`
+[[ ! -z "$TRAVIS_COMMIT" ]] && COMMIT=$TRAVIS_COMMIT
+cp src/versionInfo.json src/versionInfo.json.backup
+echo '{"commit":"'$COMMIT'", "buildDate":"'$DATE'"}' > src/versionInfo.json
+
+# Build the thing
 npm run build
+# Copy the template file back
+mv src/versionInfo.json.backup src/versionInfo.json
 cd build/
 # TODO:Force flag to invalidation
 echo "--- [S3]         Synchronizing website to AWS S3..."
