@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "classnames": "^2.2.5",
+    "cra-append-sw": "^2.7.0",
     "eslint-plugin-react": "^7.11.1",
     "fuse.js": "^3.3.0",
     "prop-types": "^15.5.10",
@@ -24,7 +25,7 @@
   },
   "scripts": {
     "start": "NODE_PATH=src/ react-scripts start",
-    "build": "NODE_PATH=src/ react-scripts build",
+    "build": "NODE_PATH=src/ react-scripts build && cra-append-sw ./src/custom-sw.js",
     "deploy": "yarn build && ./deploy-to-s3.sh",
     "test": "NODE_PATH=src/ react-scripts test --env=jsdom",
     "test-ci": "CI=true NODE_PATH=src/ react-scripts test --env=jsdom --coverage",

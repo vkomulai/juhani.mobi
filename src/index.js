@@ -6,17 +6,17 @@ import * as storage from 'redux-storage'
 import createEngine from 'redux-storage-engine-localstorage'
 import { Provider } from 'react-redux'
 
-import registerServiceWorker from 'registerServiceWorker.js'
+import { register } from 'registerServiceWorker.js'
 import { App } from 'App'
 import shoppingApp from 'reducers'
-import { 
+import {
   initializeAnalytics,
   sendApplicationLoadedEvent
- } from './api/Analytics'
-import { 
+} from './api/Analytics'
+import {
   listenToWindowEvent,
   listenToShareTargetEvent
- } from './actions'
+} from './actions'
 
 const engine = createEngine('juhani.mobi')
 const middleware = storage.createMiddleware(engine)
@@ -35,10 +35,10 @@ initializeAnalytics()
 sendApplicationLoadedEvent()
 
 ReactDOM.render(
-  <Provider store={ store }>
+  <Provider store={store}>
     <App />
   </Provider>,
   document.getElementById('root')
 )
 
-registerServiceWorker()
+register()
