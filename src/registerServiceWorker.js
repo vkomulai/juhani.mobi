@@ -77,7 +77,7 @@ function registerValidSW(swUrl, config) {
                 'tabs for this page are closed. See https://bit.ly/CRA-PWA.'
               )
               installingWorker.postMessage({ type: 'SKIP_WAITING' })
-              setTimeout(() => location.reload(), 3000) // eslint-disable-line 
+              setTimeout(() => location.reload(), 1000) // eslint-disable-line 
 
             } else {
               // At this point, everything has been precached.

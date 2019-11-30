@@ -57,22 +57,24 @@ export const listenToWindowEvent = (eventName) => {
 export const listenToShareTargetEvent = () => {
   return (dispatch) => window.addEventListener('DOMContentLoaded', () => {
     const url = new URL(window.location)
-    const paramUrl = url.searchParams && url.searchParams.get('url')
-    const paramText = (url.searchParams && url.searchParams.get('text')) || ''
-    const paramTitle = (url.searchParams && url.searchParams.get('title')) || ''
-    const recipeUrl = paramUrl || findUrlFromText(paramText) || findUrlFromText(paramTitle)
-    history.pushState({}, null, window.location.origin) //  eslint-disable-line no-restricted-globals
-    /** https://bugs.chromium.org/p/chromium/issues/detail?id=789379  */
-    if (recipeUrl) {
-      scrapeRecipe(recipeUrl)
-        .then(items => {
-          dispatch(itemsRecognized(items))
-          sendItemsRecognizedEvent(items)
-        })
-        .catch(err => sendClientError(`Could not parse share data from url=${recipeUrl}, err=${err}`))
-    } else (
-      sendClientError('Could not parse share data from url=' + url)
-    )
+    if (url.searchParams) {
+      const paramUrl = url.searchParams && url.searchParams.get('url')
+      const paramText = (url.searchParams && url.searchParams.get('text')) || ''
+      const paramTitle = (url.searchParams && url.searchParams.get('title')) || ''
+      const recipeUrl = paramUrl || findUrlFromText(paramText) || findUrlFromText(paramTitle)
+      history.pushState({}, null, window.location.origin) //  eslint-disable-line no-restricted-globals
+      /** https://bugs.chromium.org/p/chromium/issues/detail?id=789379  */
+      if (recipeUrl) {
+        scrapeRecipe(recipeUrl)
+          .then(items => {
+            dispatch(itemsRecognized(items))
+            sendItemsRecognizedEvent(items)
+          })
+          .catch(err => sendClientError(`Could not parse share data from url=${recipeUrl}, err=${err}`))
+      } else (
+        sendClientError('Could not parse share data from url=' + url)
+      )
+    }
   })
 }
 

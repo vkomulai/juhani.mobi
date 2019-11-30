@@ -1,0 +1,40 @@
+{
+  "en": {
+    "translation": {
+      "buttons.clear": "Empty",
+      "buttons.add": "Add",
+      "settings.title": "Settings",
+      "settings.sortAutomatially": "Sort Automatially",
+      "settings.changeLanguage": "Change language",
+      "settings.commit": "Version",
+      "settings.buildDate": "Published",
+      "infoView.mainText.offline": "You are in offline mode!",
+      "infoView.mainText.iamJuhani": "I'm Juhani, voice-driven shopping list",
+      "infoView.mainText.iamListening": "I'm listening",
+      "infoView.mainText.congratsItWorked": "Great, you got something to the list!",
+      "infoView.subText.letsAddSomething": "Let's add something more...",
+      "infoView.subText.speechReconigtionNotWorking": "Speechrecognition doesn't work",
+      "infoView.subText.speechReconigtionNotSupported": "Your browser doesn't support speech",
+      "infoView.subText.tellMeWhatToAdd": "Tell me what to add to the list..."
+    }
+  },
+  "fi": {
+    "translation": {
+      "buttons.clear": "Tyhjennä",
+      "buttons.add": "Lisää",
+      "settings.title": "Asetukset",
+      "settings.sortAutomatially": "Järjestä automaattisesti",
+      "settings.changeLanguage": "Vaihda kieli",
+      "settings.commit": "Versio",
+      "settings.buildDate": "Julkaistu",
+      "infoView.mainText.offline": "Selaimesi offline-tilassa!",
+      "infoView.mainText.iamJuhani": "Olen Juhani, ääniohjattu ostoslista",
+      "infoView.mainText.iamListening": "Kuuntelen",
+      "infoView.mainText.congratsItWorked": "Hienoa, sait jo asioita listalle!",
+      "infoView.subText.letsAddSomething": "Lisätäänpä vielä jotain...",
+      "infoView.subText.speechReconigtionNotWorking": "Puheentunnistus ei toimi",
+      "infoView.subText.speechReconigtionNotSupported": "Selaimesi EI tue puheentunnistusta",
+      "infoView.subText.tellMeWhatToAdd": "Kerro ääneen mitä laitan listalle..."
+    }
+  }
+}

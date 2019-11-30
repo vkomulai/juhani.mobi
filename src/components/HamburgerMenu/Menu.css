@@ -23,6 +23,10 @@ hr {
   margin-bottom: 5px;
 }
 
+input {
+  margin-left: 2px;
+}
+
 .bm-burger-button {
   margin: 10px;
   position: absolute;
@@ -32,6 +36,14 @@ hr {
 
 .item>* {
   font-size: 1.5rem;
+}
+
+.row {
+  display: flex;
+}
+
+.row>div:first-child {
+  width: 3rem;
 }
 
 .version {
