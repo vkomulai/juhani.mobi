@@ -1,18 +1,18 @@
 import { connect } from 'react-redux'
-import { Button} from 'components'
+import { Button } from 'components'
 import { startListening } from 'api/SpeechRecognitionAPI'
-import { 
+import {
   sendAddButtonPressedEvent,
   sendItemsRecognizedEvent
- } from 'api/Analytics'
-import { 
+} from 'api/Analytics'
+import {
   addItemPressed,
   itemsRecognized
 } from 'actions'
 
 const mapStateToProps = state => ({
   enabled: state.isSpeechRecognitionSupported && !state.listening && state.isOnline,
-  title: 'Lisää'
+  labelKey: 'buttons.add'
 })
 
 const mapDispatchToProps = dispatch => ({
