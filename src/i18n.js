@@ -15,4 +15,8 @@ i18n
     }
   })
 
+export const getLocaleLang = () => {
+  return i18n.language === 'fi' ? 'fi-FI' : 'en-GB'
+}
+
 export default i18n
