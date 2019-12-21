@@ -78,6 +78,25 @@ export const listenToShareTargetEvent = () => {
   })
 }
 
+export const storeList = (listId) => (dispatch, getState) => {
+  const { shoppingItems } = getState()
+  fetch(`/list/${listId}`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(shoppingItems)
+  }).then(() =>
+    dispatch({ LIST_ID: listId })
+  ).catch(error =>
+    // eslint-disable-next-line no-console
+    console.error('Storing list failed: ', error)
+  )
+
+}
+
+
 const findUrlFromText = (text) => {
   const match = text.match(/^[\S\s]*\s*(?<url>https?:\/\/[^\s]+)$/)
   return match && match.groups && match.groups.url
