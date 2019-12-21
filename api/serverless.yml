@@ -27,6 +27,7 @@ provider:
     dev_api_host: api-dev
     RECIPES_TABLE: "Recipes-${opt:stage, self:provider.stage}"
     CATEGORY_TABLE: "Categories-${opt:stage, self:provider.stage}"
+    LISTS_TABLE: "Lists-${opt:stage, self:provider.stage}"
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -40,6 +41,7 @@ provider:
       Resource:
         - arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.RECIPES_TABLE}
         - arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.CATEGORY_TABLE}
+        - arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.LISTS_TABLE}
     - Effect: Allow
       Action:
         - "lambda:InvokeFunction"
