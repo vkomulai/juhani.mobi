@@ -23,7 +23,8 @@
     "redux": "^3.7.2",
     "redux-storage": "^4.1.2",
     "redux-storage-engine-localstorage": "^1.1.4",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "uuid": "^3.3.3"
   },
   "scripts": {
     "start": "NODE_PATH=src/ react-scripts start",
