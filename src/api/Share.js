@@ -14,7 +14,7 @@ export const shareList = (listId, shoppingItems) => {
   navigator.share({
     title: title,
     text: formattedShoppingList + '\n',
-    url: `https://www.juhani.mobi?listId=${listId}`  //  In the future, persist the list of user to dynamodb and add the url here 
+    url: `https://www.juhani.mobi/l/${listId}`
   })
     .then(() => console.log('Successful share'))  //  eslint-disable-line no-console
     .catch((error) => console.log('Error sharing', error))   //  eslint-disable-line no-console
