@@ -1,6 +1,7 @@
 import Fuse from 'fuse.js'
 import _ from 'lodash'
-import { sendClientError } from '../api/Analytics'
+import { sendClientError } from 'api/Analytics'
+import { getApiHost } from 'api/Utils'
 import testData from 'api/CategoryData.json'
 
 export const fetchCategoryData = () => {
@@ -8,10 +9,8 @@ export const fetchCategoryData = () => {
     return Promise.resolve(testData)  //  Ugly hack, fix this later
   }
 
-  const apiHost = location && location.hostname !== 'localhost' ? //  eslint-disable-line
-    'https://api.juhani.mobi' :
-    ''
-  return fetch(`${apiHost}/categories`)
+
+  return fetch(`${getApiHost()}/categories`)
     .then(response => response.json())
     .catch(err => {
       sendClientError('fetchCategoryData failed ' + err)

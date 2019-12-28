@@ -5,7 +5,7 @@ import {
   sendUnknownItems
 } from 'api/Analytics'
 import { getItemsWithUnknownOrder } from 'api/MarketCategories'
-
+import { getApiHost } from 'api/Utils'
 
 export const ADD_ITEM_PRESSED = 'ADD_ITEM_PRESSED'
 export const ITEMS_LISTENED = 'ITEMS_LISTENED'
@@ -81,7 +81,7 @@ export const listenToShareTargetEvent = () => {
 }
 
 export const fetchList = (listId) => (dispatch) => {
-  fetch(`/list/${listId}`, {
+  fetch(`${getApiHost()}/list/${listId}`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
@@ -102,7 +102,7 @@ export const fetchList = (listId) => (dispatch) => {
 
 export const storeList = (listId) => (dispatch, getState) => {
   const { shoppingItems } = getState()
-  fetch(`/list/${listId}`, {
+  fetch(`${getApiHost()}/list/${listId}`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
