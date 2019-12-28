@@ -9,6 +9,7 @@ import { getItemsWithUnknownOrder } from 'api/MarketCategories'
 
 export const ADD_ITEM_PRESSED = 'ADD_ITEM_PRESSED'
 export const ITEMS_LISTENED = 'ITEMS_LISTENED'
+export const ITEMS_LIST_LOADED = 'ITEM_LIST_LOADED'
 export const ANALYZE_ITEMS = 'ANALYZE_ITEMS'
 export const ITEMS_REORDERED = 'ITEMS_REORDERED'
 export const COLLECTED_ITEM_PRESSED = 'COLLECTED_ITEM_PRESSED'
@@ -57,11 +58,12 @@ export const listenToWindowEvent = (eventName) => {
 export const listenToShareTargetEvent = () => {
   return (dispatch) => window.addEventListener('DOMContentLoaded', () => {
     const url = new URL(window.location)
-    if (url.searchParams) {
+    if (url.searchParams && url.searchParams.get('url')) {
       const paramUrl = url.searchParams && url.searchParams.get('url')
       const paramText = (url.searchParams && url.searchParams.get('text')) || ''
       const paramTitle = (url.searchParams && url.searchParams.get('title')) || ''
       const recipeUrl = paramUrl || findUrlFromText(paramText) || findUrlFromText(paramTitle)
+      //  Clean the url from the share target content
       history.pushState({}, null, window.location.origin) //  eslint-disable-line no-restricted-globals
       /** https://bugs.chromium.org/p/chromium/issues/detail?id=789379  */
       if (recipeUrl) {
@@ -76,6 +78,26 @@ export const listenToShareTargetEvent = () => {
       )
     }
   })
+}
+
+export const fetchList = (listId) => (dispatch) => {
+  fetch(`/list/${listId}`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    }
+  }).then((response) => {
+    return response.json()
+  }).then((items) => {
+    dispatch({
+      type: ITEMS_LIST_LOADED,
+      items
+    })
+  }).catch(error =>
+    // eslint-disable-next-line no-console
+    console.error('Fetching list failed: ', error)
+  )
 }
 
 export const storeList = (listId) => (dispatch, getState) => {

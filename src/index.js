@@ -1,5 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch
+} from 'react-router-dom'
 import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import * as storage from 'redux-storage'
@@ -36,7 +41,12 @@ sendApplicationLoadedEvent()
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <Router>
+      <Switch>
+        <Route path='/l/:id' component={App} />
+        <Route path='/' component={App} />
+      </Switch>
+    </Router>
   </Provider>,
   document.getElementById('root')
 )

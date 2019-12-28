@@ -1,10 +1,11 @@
 import _ from 'lodash'
 import { combineReducers } from 'redux'
 import { arrayMove } from 'react-sortable-hoc'
-import { supportSpeechRecognition } from 'api/SpeechRecognitionAPI' 
+import { supportSpeechRecognition } from 'api/SpeechRecognitionAPI'
 import {
   ADD_ITEM_PRESSED,
   ITEMS_LISTENED,
+  ITEMS_LIST_LOADED,
   ITEMS_REORDERED,
   COLLECTED_ITEM_PRESSED,
   READY_PRESSED,
@@ -17,8 +18,8 @@ import { getItemOrder } from 'api/MarketCategories'
 
 //  Ugly haxxx for local env
 const DEFAULT_ITEMS = location && location.hostname !== 'localhost' ? //  eslint-disable-line
-  [] :  
-  [ {
+  [] :
+  [{
     name: 'banaani',
     collected: false,
     index: 0
@@ -58,6 +59,8 @@ export const shoppingItems = (state = DEFAULT_ITEMS, action) => {
       return state.filter(v => v.name !== action.item.name)
     case READY_PRESSED:
       return []
+    case ITEMS_LIST_LOADED:
+      return action.items
     case COLLECTED_ITEM_PRESSED:
       return state.map((item, idx) => {
         if (action.item && action.item.name === item.name) {
@@ -65,24 +68,24 @@ export const shoppingItems = (state = DEFAULT_ITEMS, action) => {
           if (lastCollectedIndex === -1) {
             lastCollectedIndex = state.length
           }
-          return { 
-            ...item, 
-            collected: !item.collected, 
+          return {
+            ...item,
+            collected: !item.collected,
             index: lastCollectedIndex
           }
         } else {
-          return { 
-            ...item, 
+          return {
+            ...item,
             index: idx
           }
         }
-      }).sort((a,b) => a.index - b.index)
+      }).sort((a, b) => a.index - b.index)
     case ITEMS_REORDERED:
       return arrayMove(state, action.oldIndex, action.newIndex)
     case ITEMS_LISTENED:
       const items = _.unionBy(state, action.recognizedItems, 'name') //  eslint-disable-line
-      return action.sortAutomatically ? 
-        items.sort((a, b) => getItemOrder(a.name) - getItemOrder(b.name)) : 
+      return action.sortAutomatically ?
+        items.sort((a, b) => getItemOrder(a.name) - getItemOrder(b.name)) :
         items
     default:
       return state
@@ -93,8 +96,8 @@ const isOnline = (state = true, action) => {
   switch (action.type) {
     case ONLINE_CHANGED:
       return action.payload
-  default:
-    return state
+    default:
+      return state
   }
 }
 
