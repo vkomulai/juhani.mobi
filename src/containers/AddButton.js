@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import { Button } from 'components'
+import { getLocaleLang } from 'i18n'
 import { startListening } from 'api/SpeechRecognitionAPI'
 import {
   sendAddButtonPressedEvent,
@@ -19,7 +20,7 @@ const mapDispatchToProps = dispatch => ({
   onClick: () => {
     sendAddButtonPressedEvent()
     dispatch(addItemPressed())
-    startListening(recognizedItems => {
+    startListening(getLocaleLang(), recognizedItems => {
       if (recognizedItems && recognizedItems.length > 0) {
         sendItemsRecognizedEvent(recognizedItems)
       }

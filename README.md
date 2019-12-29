@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/vkomulai/juhani.mobi.svg?branch=master)](https://travis-ci.org/vkomulai/juhani.mobi) [![codecov](https://codecov.io/gh/vkomulai/juhani.mobi/branch/master/graph/badge.svg)](https://codecov.io/gh/vkomulai/juhani.mobi)
 
-# Juhani.mobi -  A voice driven shopping list
+# Juhani.mobi - A voice driven shopping list
 
 ![juhani icon](public/icons/android/android-launchericon-192-192.png?raw=true)
 
@@ -27,9 +27,8 @@
 
 - Magic words for a group if things. "Hedelmät" would automatically translate into "Omena, Banaani, Mandariini" or "Perussetti" would create basic list of grociers as a template.
 - Gamification mode: When in grocery store, have a timer to clock the collecting round. Animations on completion, etc.
-- At some point have a backend and an ability to share shopping list with someone
 - Keep track of the usual order items in the list and automatically sort the items accorning to most usual visit. Might need some kind of preset / setting for the store.
-- Collecting (checking) of items using voice as well 
+- Collecting (checking) of items using voice as well
 - Support Apple devices as well, requires a bit more work...
 
 ## Limitations
@@ -57,7 +56,6 @@ open localhost:3000
 - Travis-CI [https://travis-ci.org/vkomulai/juhani.mobi](https://travis-ci.org/vkomulai/juhani.mobi)
 - Deployment on master branch changes
 - Deploy locally using `./deploy-to-s3.sh`
-
 
 ## Changelog
 

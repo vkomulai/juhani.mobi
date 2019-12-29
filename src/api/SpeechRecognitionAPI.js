@@ -13,25 +13,25 @@ const numbers = {
 }
 
 const units = {
-  'gramma' : 'g',
-  'grammaa' : 'g',
-  'g' : 'g',
+  'gramma': 'g',
+  'grammaa': 'g',
+  'g': 'g',
   'kilo': 'kg',
-  'kiloa' : 'kg',  
+  'kiloa': 'kg',
   'kg': 'kg',
   'litra': 'l',
-  'litraa' : 'l',
+  'litraa': 'l',
   'l': 'l',
   'metri': 'm',
   'metriä': 'm',
   'm': 'm'
 }
 const descriptive = [
-  'maustamaton', 
-  'rasvaton', 
-  'kevyt', 
+  'maustamaton',
+  'rasvaton',
+  'kevyt',
   'kulutus',
-  'sininen', 
+  'sininen',
   'punainen',
   'vaalea',
   'tumma',
@@ -39,19 +39,19 @@ const descriptive = [
 ]
 
 const knownUnrecognizedWords = {
-  'skype' : 'skyr'
+  'skype': 'skyr'
 }
 
-export const supportSpeechRecognition = () =>  'webkitSpeechRecognition' in window
+export const supportSpeechRecognition = () => 'webkitSpeechRecognition' in window
 
-export const isOnline = () =>  navigator.onLine
+export const isOnline = () => navigator.onLine
 
-export const startListening = (onRecognized) => {
+export const startListening = (language, onRecognized) => {
   const recognition = new webkitSpeechRecognition() // eslint-disable-line
   recognition.continuous = true
   recognition.interimResults = false
   recognition.maxAlternatives = 1
-  recognition.lang = 'fi-FI'
+  recognition.lang = language
   let final_transcript = ''
   let recognizedItems = []
   recognition.start()
@@ -62,7 +62,7 @@ export const startListening = (onRecognized) => {
         final_transcript = event.results[i][0].transcript
       }
     }
-    let lastDebounceTranscript = ''    
+    let lastDebounceTranscript = ''
     if (lastDebounceTranscript !== final_transcript) {
       lastDebounceTranscript = final_transcript
       const tokenized = tokenizeWords(lastDebounceTranscript)
@@ -72,7 +72,7 @@ export const startListening = (onRecognized) => {
   recognition.onspeechend = () => onRecognized(recognizedItems)
 }
 
-export const tokenizeWords = words =>  {
+export const tokenizeWords = words => {
   const tokenizedRawWords = words.split(' ')
   return tokenizedRawWords.reduce((tokenized, word) => {
     if (!alreadyRecognized(word, tokenized)) {
@@ -81,7 +81,7 @@ export const tokenizeWords = words =>  {
       if (isQuantityWord(prevWord) || isAdjectiveWord(prevWord)) {
         newItem.name = prependQuantityFromPrevious(newItem, tokenized)
       }
-      return tokenized.concat([newItem])                              
+      return tokenized.concat([newItem])
     }
     return tokenized
   }, [])
@@ -92,22 +92,22 @@ export const prependQuantityFromPrevious = (newItem, recognizedItems) => {
   return `${mapToUnits(prev.name)} ${newItem.name}`
 }
 
-export const alreadyRecognized = (word, recognizedItems) => 
-  recognizedItems.find(item => item.name === word) 
+export const alreadyRecognized = (word, recognizedItems) =>
+  recognizedItems.find(item => item.name === word)
 
-export const mapToUnits = word => 
+export const mapToUnits = word =>
   numbers[word] ||
-  units[word] || 
+  units[word] ||
   word
 
-export const isQuantityWord = word => 
-  Number.isInteger(Number.parseInt(word, 10)) || 
-  units.hasOwnProperty(word) || 
+export const isQuantityWord = word =>
+  Number.isInteger(Number.parseInt(word, 10)) ||
+  units.hasOwnProperty(word) ||
   numbers.hasOwnProperty(word) ||
   descriptive.includes(word)
 
-export const isAdjectiveWord = word => 
+export const isAdjectiveWord = word =>
   word && word.endsWith('inen')
 
-export const correctRecognitionErrors = word => 
+export const correctRecognitionErrors = word =>
   word && (knownUnrecognizedWords[word] || word)

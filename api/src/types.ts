@@ -8,3 +8,5 @@ export interface Category {
   order: number
   items: string[]
 }
+
+export interface ListItem extends Category {}

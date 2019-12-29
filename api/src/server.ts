@@ -1,4 +1,4 @@
-import serverless from 'serverless-http'
+const serverless = require('serverless-http')
 import * as bodyParser from 'body-parser'
 import * as express from 'express'
 import api from './routes'

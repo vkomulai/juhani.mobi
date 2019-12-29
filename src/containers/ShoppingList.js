@@ -1,15 +1,16 @@
 import { connect } from 'react-redux'
 import { SortableList } from 'components'
-import { 
+import {
   removeItemPressed,
   collectedItemPressed,
-  itemsReOrdered
- } from 'actions'
- import {
+  itemsReOrdered,
+  fetchList
+} from 'actions'
+import {
   sendItemCollectedEvent,
   sendItemRemovedEvent,
   sendItemOrderChangedEvent
- } from 'api/Analytics'
+} from 'api/Analytics'
 
 const mapStateToProps = state => ({
   shoppingItems: state.shoppingItems
@@ -27,6 +28,9 @@ const mapDispatchToProps = dispatch => ({
   onSortEnd: (event) => {
     sendItemOrderChangedEvent()
     dispatch(itemsReOrdered(event.oldIndex, event.newIndex))
+  },
+  fetchList: (id) => {
+    dispatch(fetchList(id))
   }
 })
 

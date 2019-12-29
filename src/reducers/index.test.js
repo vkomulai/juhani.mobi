@@ -1,13 +1,14 @@
 import { shoppingItems } from './index.js'
 import {
   ITEMS_LISTENED,
+  ITEMS_LIST_LOADED,
   REMOVE_ITEM,
   ITEMS_REORDERED,
   READY_PRESSED,
   COLLECTED_ITEM_PRESSED
 } from 'actions'
 
-const STATE_EMPTY  = []
+const STATE_EMPTY = []
 const STATE_SIPULI_SAIPPUA_WCPAPERI = [
   { name: 'sipuli', collected: false },
   { name: 'saippua', collected: false },
@@ -15,7 +16,7 @@ const STATE_SIPULI_SAIPPUA_WCPAPERI = [
 ]
 
 describe('shoppingApp', () => {
-  describe('shoppingItems', () => { 
+  describe('shoppingItems', () => {
     it('defaults to empty list', () => {
       expect(shoppingItems(STATE_EMPTY, {}).length).toBe(0)
     })
@@ -42,7 +43,7 @@ describe('shoppingApp', () => {
       expect(newState[1].name).toBe('banaani')
       expect(newState[2].name).toBe('talouspaperi')
     })
-    
+
     it('adds items to empty state in automatically sorted order when sorting applied', () => {
       const addItems = {
         type: ITEMS_LISTENED,
@@ -74,8 +75,8 @@ describe('shoppingApp', () => {
     it('reorders an item in a list', () => {
       const reOrderItems = {
         type: ITEMS_REORDERED,
-        oldIndex: 2, 
-        newIndex: 0 
+        oldIndex: 2,
+        newIndex: 0
       }
 
       const newState = shoppingItems(STATE_SIPULI_SAIPPUA_WCPAPERI, reOrderItems)
@@ -123,5 +124,19 @@ describe('shoppingApp', () => {
       expect(newState[2].collected).toBe(true)
     })
 
+    it('loading a new list clears old list away', () => {
+      const loadItems = {
+        type: ITEMS_LIST_LOADED,
+        items: [
+          { name: 'tomaatti', collected: false },
+          { name: 'kurkku', collected: false }
+        ],
+        sortAutomatically: true
+      }
+      const newState = shoppingItems(STATE_SIPULI_SAIPPUA_WCPAPERI, loadItems)
+      expect(newState.length).toBe(2)
+      expect(newState[0].name).toBe('tomaatti')
+      expect(newState[1].name).toBe('kurkku')
+    })
   })
 })

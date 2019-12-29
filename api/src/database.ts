@@ -1,8 +1,9 @@
 import { DynamoDB } from 'aws-sdk'
-import { Ingredient, Category } from './types'
+import { Ingredient, Category, ListItem } from './types'
 import * as _ from 'lodash'
 
 const RecipesTable = process.env.RECIPES_TABLE
+const ListsTable = process.env.LISTS_TABLE
 const CategoryTable = process.env.CATEGORY_TABLE
 const dynamoDb =
   process.env.NODE_ENV === 'development'
@@ -24,7 +25,7 @@ export async function saveRecipe(recipeUrl: String, ingrediends: Ingredient[]): 
   try {
     await dynamoDb.put(insert).promise()
   } catch (err) {
-    console.error(`save() : recipeUrl=${recipeUrl} failed, err=${err}`)
+    console.error(`saveRecipe() : recipeUrl=${recipeUrl} failed, err=${err}`)
     throw 'Saving recipe failed'
   }
 }
@@ -41,8 +42,42 @@ export async function findRecipe(recipeUrl: String): Promise<Ingredient[]> {
     const result = await dynamoDb.get(query).promise()
     return <Ingredient[]>_.get(result, 'Item.Ingredients', [])
   } catch (err) {
-    console.error(`find() : recipeUrl=${recipeUrl} failed, err=${err}`)
+    console.error(`findRecipe() : recipeUrl=${recipeUrl} failed, err=${err}`)
     throw 'Finding recipe failed'
+  }
+}
+
+export async function findList(listId: String): Promise<ListItem[]> {
+  const query = {
+    TableName: ListsTable,
+    Key: {
+      ListId: listId
+    }
+  }
+
+  try {
+    const result = await dynamoDb.get(query).promise()
+    return (result.Item.ListItems as ListItem[]) || []
+  } catch (err) {
+    console.error(`findList(${listId}) failed, err=${err}`)
+    throw 'Finding List failed'
+  }
+}
+
+export async function saveList(listId: String, listItems: ListItem[]): Promise<void> {
+  const insert = {
+    TableName: ListsTable,
+    Item: {
+      ListId: listId,
+      ListItems: listItems
+    }
+  }
+
+  try {
+    await dynamoDb.put(insert).promise()
+  } catch (err) {
+    console.error(`saveList(${listId}), listItems=${listItems} failed, err=${err}`)
+    throw 'Saving list failed'
   }
 }
 
