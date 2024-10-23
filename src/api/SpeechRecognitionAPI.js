@@ -47,29 +47,34 @@ export const supportSpeechRecognition = () => 'webkitSpeechRecognition' in windo
 export const isOnline = () => navigator.onLine
 
 export const startListening = (language, onRecognized) => {
-  const recognition = new webkitSpeechRecognition() // eslint-disable-line
-  recognition.continuous = true
-  recognition.interimResults = false
-  recognition.maxAlternatives = 1
-  recognition.lang = language
-  let final_transcript = ''
-  let recognizedItems = []
-  recognition.start()
+  try { 
+    const recognition = new webkitSpeechRecognition() // eslint-disable-line
+    recognition.continuous = true
+    recognition.interimResults = false
+    recognition.maxAlternatives = 1
+    recognition.lang = language
+    let final_transcript = ''
+    let recognizedItems = []
+    recognition.start()
 
-  recognition.onresult = event => {
-    for (let i = event.resultIndex; i < event.results.length; ++i) {
-      if (event.results[i].isFinal) {
-        final_transcript = event.results[i][0].transcript
+    recognition.onresult = event => {
+      for (let i = event.resultIndex; i < event.results.length; ++i) {
+        if (event.results[i].isFinal) {
+          final_transcript = event.results[i][0].transcript
+        }
+      }
+      let lastDebounceTranscript = ''
+      if (lastDebounceTranscript !== final_transcript) {
+        lastDebounceTranscript = final_transcript
+        const tokenized = tokenizeWords(lastDebounceTranscript)
+        recognizedItems = recognizedItems.concat(tokenized)
       }
     }
-    let lastDebounceTranscript = ''
-    if (lastDebounceTranscript !== final_transcript) {
-      lastDebounceTranscript = final_transcript
-      const tokenized = tokenizeWords(lastDebounceTranscript)
-      recognizedItems = recognizedItems.concat(tokenized)
-    }
+    recognition.onspeechend = () => onRecognized(recognizedItems)
+  } catch (e) {
+    console.log('startListening(): ', e) // eslint-disable-line
+    onRecognized([])
   }
-  recognition.onspeechend = () => onRecognized(recognizedItems)
 }
 
 export const tokenizeWords = words => {

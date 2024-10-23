@@ -16,7 +16,11 @@ const isProduction = () => location.hostname !== 'localhost'//  eslint-disable-l
 
 const sendAnalyticsEvent = (eventName, eventValue) => {
   if (isProduction()) {
-    ReactGA.event({ category: 'UserInteraction', action: eventName, value: eventValue })
+    try {
+      ReactGA.event({ category: 'UserInteraction', action: eventName, value: eventValue })
+    } catch (e) {
+      console.log('sendAnalyticsEvent(): ', eventName, e) //  eslint-disable-line
+    }
   } else {
     console.log('sendAnalyticsEvent(): ', eventName) //  eslint-disable-line
   }
