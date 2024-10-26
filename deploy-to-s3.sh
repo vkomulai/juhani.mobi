@@ -21,9 +21,12 @@ aws s3 sync . s3://$S3_BUCKET
 # Force zero caching on index.html
 aws s3 cp s3://$S3_BUCKET/index.html s3://$S3_BUCKET/index.html --metadata-directive REPLACE --cache-control max-age=0
 echo "--- [S3]         Website published to AWS S3"
+echo "--- [S3]         Setting content type for index.html to text/html; charset=utf-8"
+aws s3 cp index.html  s3://www.juhani.mobi/  --content-type "text/html; charset=utf-8"
 echo "--- [Cloudfront] Invalidating Cloudfront $CLOUDFRONT_DUSTRIBUTION_ID cache for changed files.."
 INVALIDATION_ID=`aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DUSTRIBUTION_ID --output text --query 'Invalidation.Id' --paths "/*"`
 echo "--- [Cloudfront] Waiting for Cloudfront invalidation $INVALIDATION_ID to complete..."
 aws cloudfront wait invalidation-completed --distribution-id $CLOUDFRONT_DUSTRIBUTION_ID --id $INVALIDATION_ID
+aws s3 cp --content-type text/html s3://$S3_BUCKET/index.html s3://$S3_BUCKET/index.html --recursive
 echo "--- [SUCCESS]    Site is published and Cloudfront cache for has been invalidated!"
 cd ..
