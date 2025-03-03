@@ -33,9 +33,11 @@ export const sendClientError = (error) => {
 }
 
 export const sendUnknownItems = (items) => {
-  Raven.captureMessage(`Unknown items added to list: [${items.join(',')}]`, {
-    level: 'info' // one of 'info', 'warning', or 'error'
-  })
+  if (items && items.length > 0) {
+    Raven.captureMessage(`Unknown items added to list: [${items.join(',')}]`, {
+      level: 'info' // one of 'info', 'warning', or 'error'
+    })
+  }
 }
 
 export const initializeAnalytics = () => {
