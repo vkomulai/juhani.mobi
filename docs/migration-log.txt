@@ -1,0 +1,2 @@
+1. Dump the LLOC (this is not a big project)
+2. Claude init
