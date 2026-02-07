@@ -37,7 +37,10 @@
     "eslint-fix": "eslint src/*.js src/**/*.js src/**/*.jsx --fix",
     "csslint": "stylelint src/*.css src/**/*.css",
     "csslint-fix": "stylelint src/*.css src/**/*.css --fix",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "test:e2e": "npx playwright test",
+    "test:e2e:ui": "npx playwright test --ui",
+    "test:e2e:headed": "npx playwright test --headed"
   },
   "pre-commit": [
     "eslint",
@@ -45,6 +48,7 @@
     "test-ci"
   ],
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "codecov": "^3.1.0",
     "enzyme": "^3.8.0",
     "enzyme-adapter-react-16": "^1.8.0",

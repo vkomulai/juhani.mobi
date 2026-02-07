@@ -1,2 +1,24 @@
 1. Dump the LLOC (this is not a big project)
 2. Claude init
+3. Ask Opus 4.6 to create a plan.  Plan the migration of this codebase to modern react. I want to do this properly and my approach is to 1) Create functional specs documentations as into docs/folder. 2) Create missing end-to-end tests using
+  playwright. After that we can start planning the react version migration to latest
+     - "There was read .env"
+---- PLAN DONE ----
+5. Start implementing the plan of writing specs and tests)
+5. Write the plan to docs/ -folder into specs
+
+⎿  You've hit your limit · resets 11am (Europe/Helsinki)
+
+
+TODO
+- Context. 
+  - This is a trivial app. TODO with these functionalities
+    - voice driven
+    - drag and drop
+    - localization
+    - smart sorting (wstored in backend)
+    - sharing of lists
+    - 
+- Cal
+- Finally create slides with some htmljstool from this story use the migratin log
+NOT DONE 3. Next I want you to create archicture documentation into the docs folder
