@@ -77,30 +77,27 @@ test.describe('Sharing', () => {
   })
 
   test('load shared list via /l/:id replaces current items', async ({ speechPage }) => {
-    // This test requires the backend API to be running on localhost:4000
     const testListId = 'e2e-test-list-id'
 
-    try {
-      const response = await speechPage.request.post(`http://localhost:4000/list/${testListId}`, {
-        data: JSON.stringify([
+    // Mock GET /list/:id — fetchList() calls this when navigating to /l/:id
+    await speechPage.route(`**/list/${testListId}`, route => {
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify([
           { name: 'shared-item-1', collected: false },
           { name: 'shared-item-2', collected: false }
-        ]),
-        headers: { 'Content-Type': 'application/json' }
+        ])
       })
+    })
 
-      if (response.ok()) {
-        // Navigate to the shared list URL
-        await speechPage.goto(`/l/${testListId}`)
-        await speechPage.waitForLoadState('networkidle')
-        await speechPage.waitForTimeout(500)
+    // Navigate to the shared list URL
+    await speechPage.goto(`/l/${testListId}`)
+    await speechPage.waitForLoadState('networkidle')
+    await speechPage.waitForTimeout(500)
 
-        // Verify the shared items are displayed
-        await expect(speechPage.locator('span.item-normal', { hasText: 'shared-item-1' })).toBeVisible()
-        await expect(speechPage.locator('span.item-normal', { hasText: 'shared-item-2' })).toBeVisible()
-      }
-    } catch {
-      test.skip(true, 'Backend API not available')
-    }
+    // Verify the shared items replaced current items
+    await expect(speechPage.locator('span.item-normal', { hasText: 'shared-item-1' })).toBeVisible()
+    await expect(speechPage.locator('span.item-normal', { hasText: 'shared-item-2' })).toBeVisible()
   })
 })
