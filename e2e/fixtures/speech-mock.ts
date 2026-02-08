@@ -4,6 +4,10 @@
  * This script is injected via page.addInitScript() BEFORE the app loads
  * so that `'webkitSpeechRecognition' in window` evaluates to true.
  *
+ * IMPORTANT: The app calls recognition.start() BEFORE setting .onresult
+ * and .onspeechend. So start() must defer all handler checks into the
+ * setTimeout callback, not check them synchronously.
+ *
  * Control from tests:
  *   page.evaluate(() => { window.__speechMockTranscript = 'banaani maito' })
  *   page.evaluate(() => { window.__speechMockShouldError = true })
@@ -24,36 +28,41 @@ export const speechMockScript = `
     }
 
     start() {
+      var self = this;
+
       if (window.__speechMockShouldError) {
-        if (this.onerror) {
-          setTimeout(() => this.onerror({ error: 'mock-error' }), 50);
-        }
-        if (this.onspeechend) {
-          setTimeout(() => this.onspeechend(), 100);
-        }
+        setTimeout(function() {
+          if (self.onerror) {
+            self.onerror({ error: 'mock-error' });
+          }
+          setTimeout(function() {
+            if (self.onspeechend) {
+              self.onspeechend();
+            }
+          }, 50);
+        }, 100);
         return;
       }
 
-      const transcript = window.__speechMockTranscript;
-      if (this.onresult && transcript) {
-        const event = {
-          resultIndex: 0,
-          results: [{
-            0: { transcript },
-            isFinal: true,
-            length: 1
-          }]
-        };
-        // Small delay to simulate async speech recognition
-        setTimeout(() => {
-          this.onresult(event);
-          if (this.onspeechend) {
-            setTimeout(() => this.onspeechend(), 50);
+      var transcript = window.__speechMockTranscript;
+      setTimeout(function() {
+        if (transcript && self.onresult) {
+          var event = {
+            resultIndex: 0,
+            results: [{
+              0: { transcript: transcript },
+              isFinal: true,
+              length: 1
+            }]
+          };
+          self.onresult(event);
+        }
+        setTimeout(function() {
+          if (self.onspeechend) {
+            self.onspeechend();
           }
-        }, 100);
-      } else if (this.onspeechend) {
-        setTimeout(() => this.onspeechend(), 150);
-      }
+        }, 50);
+      }, 100);
     }
 
     stop() {}

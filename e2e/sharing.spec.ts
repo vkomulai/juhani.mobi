@@ -7,18 +7,7 @@ test.describe('Sharing', () => {
   })
 
   test('share icon click with items calls navigator.share', async ({ speechPage }) => {
-    // Mock navigator.share
-    const shareData = await speechPage.evaluate(() => {
-      return new Promise<any>((resolve) => {
-        (navigator as any).share = (data: any) => {
-          resolve(data)
-          return Promise.resolve()
-        }
-      // We need a different approach - set up the mock and capture the call
-      })
-    }).catch(() => null)
-
-    // Better approach: mock navigator.share and capture the call
+    // Mock navigator.share and capture the call
     await speechPage.evaluate(() => {
       (window as any).__shareCalledWith = null;
       (navigator as any).share = (data: any) => {
@@ -35,12 +24,11 @@ test.describe('Sharing', () => {
 
     const shareCalledWith = await speechPage.evaluate(() => (window as any).__shareCalledWith)
 
-    // Should have been called (items exist on localhost)
-    if (shareCalledWith) {
-      expect(shareCalledWith.title).toMatch(/^Ostoslista \d+\.\d+\. kello \d+\.\d+$/)
-      expect(shareCalledWith.url).toContain('https://www.juhani.mobi/l/')
-      expect(shareCalledWith.text).toContain('- ')
-    }
+    // Should have been called (default items exist on localhost)
+    expect(shareCalledWith).not.toBeNull()
+    expect(shareCalledWith.title).toMatch(/^Ostoslista \d+\.\d+\. kello \d+\.\d+$/)
+    expect(shareCalledWith.url).toContain('https://www.juhani.mobi/l/')
+    expect(shareCalledWith.text).toContain('- ')
   })
 
   test('empty list share shows alert', async ({ speechPage }) => {
@@ -50,20 +38,23 @@ test.describe('Sharing', () => {
       await emptyButton.click()
     }
 
-    // Mock navigator.share
+    // Mock navigator.share so the "no share API" alert doesn't fire
     await speechPage.evaluate(() => {
       (navigator as any).share = (data: any) => Promise.resolve()
     })
 
-    // Listen for alert dialog
-    const alertPromise = speechPage.waitForEvent('dialog')
+    // Auto-accept dialog and capture message (alert() blocks JS, so must be
+    // handled before click completes)
+    let dialogMessage = ''
+    speechPage.once('dialog', async dialog => {
+      dialogMessage = dialog.message()
+      await dialog.accept()
+    })
 
-    // Click share icon
     await speechPage.locator('.header img').click()
+    await speechPage.waitForTimeout(200)
 
-    const dialog = await alertPromise
-    expect(dialog.message()).toContain('Lisää ostoksia')
-    await dialog.accept()
+    expect(dialogMessage).toContain('Lisää ostoksia')
   })
 
   test('missing navigator.share shows alert', async ({ speechPage }) => {
@@ -72,32 +63,23 @@ test.describe('Sharing', () => {
       delete (navigator as any).share
     })
 
-    // Listen for alert dialog
-    const alertPromise = speechPage.waitForEvent('dialog')
+    // Auto-accept dialog and capture message
+    let dialogMessage = ''
+    speechPage.once('dialog', async dialog => {
+      dialogMessage = dialog.message()
+      await dialog.accept()
+    })
 
-    // Click share icon
     await speechPage.locator('.header img').click()
+    await speechPage.waitForTimeout(200)
 
-    const dialog = await alertPromise
-    expect(dialog.message()).toContain('Chrome 61 Android')
-    await dialog.accept()
+    expect(dialogMessage).toContain('Chrome 61 Android')
   })
 
   test('load shared list via /l/:id replaces current items', async ({ speechPage }) => {
-    // This test requires the backend API to be running
-    // We'll seed data via the API if available, or skip
-
-    // First, store a list via the app's own mechanism
-    await speechPage.evaluate(() => {
-      (navigator as any).share = () => Promise.resolve()
-    })
-
-    // Navigate to a shared list URL
-    // Note: This requires the backend to be running on localhost:4000
-    // If the backend is not available, the test will show the existing items unchanged
+    // This test requires the backend API to be running on localhost:4000
     const testListId = 'e2e-test-list-id'
 
-    // Try to seed the backend directly
     try {
       const response = await speechPage.request.post(`http://localhost:4000/list/${testListId}`, {
         data: JSON.stringify([

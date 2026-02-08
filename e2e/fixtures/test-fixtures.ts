@@ -52,6 +52,6 @@ export async function clearAppState(page: Page) {
 export async function addItemsViaSpeech(page: Page, transcript: string) {
   await setSpeechTranscript(page, transcript)
   await page.click('button:has-text("Lisää")')
-  // Wait for speech recognition to complete and items to appear
-  await page.waitForTimeout(300)
+  // Wait for speech recognition mock to fire (100ms) + onspeechend (50ms) + React re-render
+  await page.waitForTimeout(500)
 }
