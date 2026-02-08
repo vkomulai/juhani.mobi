@@ -104,22 +104,46 @@ test.describe('Shopping List', () => {
     await expect(speechPage.locator(`span.item-normal`, { hasText: itemName! })).toBeVisible()
   })
 
-  test.fixme('drag and drop reorder', async ({ speechPage }) => {
-    // Drag-and-drop with 500ms pressDelay is fragile in Playwright
-    // This test is marked as fixme until a reliable drag strategy is implemented
-    const items = speechPage.locator('.items-container')
-    const firstItem = items.first()
-    const secondItem = items.nth(1)
+  test('drag and drop reorder', async ({ speechPage }) => {
+    // react-sortable-hoc with pressDelay={500}: mouse must stay still for
+    // 500ms before handlePress fires; target text spans to avoid
+    // shouldCancelStart cancelling on <input>/<button> elements.
+    const itemSpans = speechPage.locator('span.item-normal')
+    const initialNames = await itemSpans.allTextContents()
+    expect(initialNames.length).toBeGreaterThanOrEqual(2)
 
-    const firstBound = await firstItem.boundingBox()
-    const secondBound = await secondItem.boundingBox()
+    const firstName = initialNames[0]
+    const secondName = initialNames[1]
 
-    if (firstBound && secondBound) {
-      await speechPage.mouse.move(firstBound.x + firstBound.width / 2, firstBound.y + firstBound.height / 2)
-      await speechPage.mouse.down()
-      await speechPage.waitForTimeout(600) // Wait past 500ms pressDelay
-      await speechPage.mouse.move(secondBound.x + secondBound.width / 2, secondBound.y + secondBound.height / 2, { steps: 10 })
-      await speechPage.mouse.up()
-    }
+    const firstBox = await itemSpans.first().boundingBox()
+    const secondBox = await itemSpans.nth(1).boundingBox()
+    expect(firstBox).not.toBeNull()
+    expect(secondBox).not.toBeNull()
+
+    // 1. Position mouse on first item text
+    await speechPage.mouse.move(
+      firstBox!.x + firstBox!.width / 2,
+      firstBox!.y + firstBox!.height / 2
+    )
+
+    // 2. Press and hold — DO NOT move during the 500ms pressDelay
+    await speechPage.mouse.down()
+    await speechPage.waitForTimeout(600)
+
+    // 3. Drag to center of second item position
+    await speechPage.mouse.move(
+      firstBox!.x + firstBox!.width / 2,
+      secondBox!.y + secondBox!.height / 2,
+      { steps: 10 }
+    )
+
+    // 4. Release
+    await speechPage.mouse.up()
+    await speechPage.waitForTimeout(300)
+
+    // Verify items swapped
+    const newNames = await itemSpans.allTextContents()
+    expect(newNames[0]).toBe(secondName)
+    expect(newNames[1]).toBe(firstName)
   })
 })
