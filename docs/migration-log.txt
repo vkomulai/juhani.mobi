@@ -8,10 +8,17 @@
 5. Write the plan to docs/ -folder into specs
 
 ⎿  You've hit your limit · resets 11am (Europe/Helsinki)
+-----
+6. Claude Starts creating the tests
+7. app/api doesn start with new node
+8. app/api doesn start with oldew node
+9. trying to fix it manually --> stupid. hard. Just through the proble to Opus "npm run test:e2e does not work"
 
 
 TODO
 - Context. 
+  - react ver, redux, 
+  - node 10!
   - This is a trivial app. TODO with these functionalities
     - voice driven
     - drag and drop

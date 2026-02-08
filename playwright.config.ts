@@ -18,7 +18,7 @@ export default defineConfig({
     }
   ],
   webServer: {
-    command: 'BROWSER=none npm start',
+    command: 'NODE_OPTIONS=--openssl-legacy-provider BROWSER=none npm start',
     url: 'http://localhost:3000',
     reuseExistingServer: true,
     timeout: 30000

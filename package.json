@@ -38,9 +38,9 @@
     "csslint": "stylelint src/*.css src/**/*.css",
     "csslint-fix": "stylelint src/*.css src/**/*.css --fix",
     "eject": "react-scripts eject",
-    "test:e2e": "npx playwright test",
-    "test:e2e:ui": "npx playwright test --ui",
-    "test:e2e:headed": "npx playwright test --headed"
+    "test:e2e": "bash -c 'source $NVM_DIR/nvm.sh && nvm exec 22 npx playwright test'",
+    "test:e2e:ui": "bash -c 'source $NVM_DIR/nvm.sh && nvm exec 22 npx playwright test --ui'",
+    "test:e2e:headed": "bash -c 'source $NVM_DIR/nvm.sh && nvm exec 22 npx playwright test --headed'"
   },
   "pre-commit": [
     "eslint",
