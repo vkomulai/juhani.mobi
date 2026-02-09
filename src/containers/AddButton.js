@@ -11,7 +11,7 @@ import {
   itemsRecognized
 } from 'actions'
 
-const mapStateToProps = state => ({
+const mapStateToProps = () => ({
   // enabled: state.isSpeechRecognitionSupported && !state.listening && state.isOnline,
   enabled: true,
   labelKey: 'buttons.add'

@@ -9,7 +9,7 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:3000',
     trace: 'on-first-retry',
-    screenshot: 'only-on-failure'
+    screenshot: 'on'
   },
   projects: [
     {
@@ -18,7 +18,7 @@ export default defineConfig({
     }
   ],
   webServer: {
-    command: 'NODE_OPTIONS=--openssl-legacy-provider BROWSER=none npm start',
+    command: 'BROWSER=none npm start',
     url: 'http://localhost:3000',
     reuseExistingServer: true,
     timeout: 30000
