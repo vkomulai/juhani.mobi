@@ -23,6 +23,8 @@ The app can receive recipe URLs via the Web Share Target API and scrape ingredie
 5. Response is an array of `{ amount, name }` objects.
 6. Frontend maps to `{ name, collected: false }` and dispatches `itemsRecognized()`.
 
+**Security note**: The backend does not validate or sanitize the user-provided URL before scraping. This could expose the backend to SSRF attacks (e.g., targeting internal services or cloud metadata endpoints). URL validation, rate limiting, and request timeouts should be added.
+
 ### Supported Recipe Sites
 
 | Site | URL Pattern |
@@ -65,4 +67,4 @@ The regex `^[\S\s]*\s*(?<url>https?:\/\/[^\s]+)$` extracts the last URL from sha
 - Network error during scraping: API returns `400`; frontend catches error, sends to Sentry, returns empty array.
 - Share with no URL in any param: `recipeUrl` is null/undefined; error sent to Sentry analytics.
 - Frontend API host: uses `https://api.juhani.mobi` in production, empty string (proxied) on localhost.
-- Race condition: DOMContentLoaded listener is registered in `index.js` at startup; if the event already fired, the listener never triggers (though this is unlikely since it's registered synchronously during module load).
+- **Known bug**: Race condition: `DOMContentLoaded` listener is registered in `index.js` at startup; if the event already fired, the listener never triggers. This could happen on slower networks or with service worker caching. Fix: check `document.readyState` before adding the listener and call the handler immediately if the document is not `'loading'`.

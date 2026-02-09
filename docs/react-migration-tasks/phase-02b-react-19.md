@@ -17,7 +17,7 @@ React 19 removes `findDOMNode` from `react-dom`. `react-sortable-hoc` calls `fin
 2. Upgrade `@testing-library/react` from ^14 to ^16 (v15+ requires React 19)
 3. Upgrade `react-i18next` if needed for React 19 compatibility
 4. Remove any remaining React 18 compatibility shims
-5. Remove unused `import React from 'react'` statements (automatic JSX runtime)
+5. Remove unused `import React from 'react'` statements (automatic JSX runtime, available since React 17)
 
 ## Expected changes
 

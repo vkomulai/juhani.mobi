@@ -11,9 +11,9 @@ The shopping list is the core feature of Juhani.mobi. Users add items via speech
 - Items are added via the speech recognition callback (not typed manually).
 - Pressing the **Lisää** (Add) button starts listening; when speech ends, recognized items are dispatched to the store.
 - New items are deduplicated against existing items by `name` using `_.unionBy(existingItems, newItems, 'name')`.
-- If automatic sorting is enabled (default), items are sorted by market category order after adding.
+- If automatic sorting is enabled (default: `true`), items are sorted by market category order after adding. When disabled, items appear in insertion order. Users can toggle this via the settings menu checkbox (see spec 09).
 - Each item has the shape `{ name: string, collected: boolean, index: number }`.
-- Item names are displayed capitalized as-is from the speech recognition output.
+- Item names are displayed exactly as received from the speech recognition output (the recognition engine typically returns lowercase text).
 
 ### Viewing the List
 
@@ -24,14 +24,14 @@ The shopping list is the core feature of Juhani.mobi. Users add items via speech
 ### Marking Items as Collected
 
 - Clicking anywhere on the item text/checkbox area toggles the `collected` flag.
-- When an item is marked collected, it is repositioned to the end of the uncollected items (just before the first already-collected item, or at the end if no collected items exist).
-- When an item is uncollected, it gets its current array index as its `index` and is re-sorted by `index`.
+- When an item is marked collected, it is repositioned to the end of the uncollected items (just before the first already-collected item, or at the end if no collected items exist). Its `index` is set to the position of the first collected item (found via `findIndex`).
+- When an item is uncollected, it gets its current array index (before the toggle) as its `index` and the list is re-sorted by `index`. This effectively keeps the item near its current position among uncollected items.
 - The list re-sorts after every toggle via `Array.sort((a, b) => a.index - b.index)`.
 
 ### Removing Items
 
 - Clicking the trash icon (🗑, Unicode `\u{1f5d1}`) removes the item from the list.
-- Removal filters by `name`: `state.filter(v => v.name !== action.item.name)`.
+- Removal filters by `name`: `state.filter(v => v.name !== action.item.name)`. **Note**: If multiple items share the same name, all will be removed when any one's trash icon is clicked.
 
 ### Clearing the List
 
@@ -76,6 +76,6 @@ The shopping list is the core feature of Juhani.mobi. Users add items via speech
 
 - Adding an item with the same name as an existing item: the duplicate is ignored (`_.unionBy` deduplication).
 - Removing an item when multiple items share the same name: all items with that name are removed (filter by name, not index).
-- Collecting the last uncollected item: it stays in place (index = state.length since `findIndex` returns -1, fallback to `state.length`).
+- Collecting the last uncollected item: `findIndex` returns -1 (no collected items found), so `index` falls back to `state.length` (technically out-of-bounds, but the item sorts to the end as intended).
 - Empty button click while offline: button is disabled, no action possible.
 - Drag-and-drop with only 1 item: no-op (oldIndex === newIndex).

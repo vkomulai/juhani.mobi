@@ -8,7 +8,7 @@ The app detects network connectivity changes via browser events and updates the 
 
 ### Online/Offline Detection
 
-- The app listens to both `window.online` and `window.offline` events (registered at startup in `index.js`).
+- The app listens to both `'online'` and `'offline'` events on the `window` object (registered at startup in `index.js`).
 - Each event dispatches `ONLINE_CHANGED` with `navigator.onLine` as the payload.
 - The `isOnline` Redux state tracks connectivity (default: `true`).
 

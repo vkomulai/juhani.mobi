@@ -1,7 +1,7 @@
 # Phase 6: react-sortable-hoc → @dnd-kit
 
 **Size:** Medium
-**Prerequisites:** Phase 5 (Zustand)
+**Prerequisites:** Phase 2 (React 18) — @dnd-kit requires React 16.8+ for hooks. Independent of Phase 5 (Zustand).
 **Blocks:** None
 
 ## Overview
@@ -48,6 +48,7 @@ import { arrayMove } from '@dnd-kit/sortable'
 
 **Target structure:**
 ```jsx
+import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import {
   DndContext,

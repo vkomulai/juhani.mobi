@@ -129,6 +129,9 @@ npx husky init
 
 **Create `.husky/pre-commit`:**
 ```bash
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
 npx lint-staged
 npm run test-ci
 ```

@@ -52,11 +52,9 @@ export default defineConfig({
     react(),
     VitePWA({ /* manifest + SW config */ })
   ],
-  resolve: {
-    alias: {
-      '': path.resolve(__dirname, './src')
-    }
-  },
+  // Note: A custom nodepathPlugin was used instead of aliases
+  // to replicate NODE_PATH=src/ behavior for bare imports.
+  // See the actual vite.config.js for the implementation.
   server: {
     port: 3000,
     proxy: {

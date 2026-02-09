@@ -90,7 +90,7 @@ npx playwright install chromium
 - Chromium-only project
 - Note: Local DynamoDB (`port 8000`) needs to be started separately before tests (via `cd api && sls dynamodb install && npm run start:local-dynamodb`), or via a `globalSetup` script
 
-**Known risk — Node version mismatch:** API requires Node 10.15 (`api/.nvmrc`). Playwright needs modern Node. May need `nvm exec` in the webServer command, or update the API's Node requirement as a prerequisite.
+**Known risk — Node version mismatch:** API requires Node 10.15 (`api/.nvmrc`), which reached end-of-life in April 2021 and is a security risk in production. Playwright needs modern Node. May need `nvm exec` in the webServer command, or update the API's Node requirement as a prerequisite. See Phase 10 for the Node upgrade plan.
 
 ### Step 2: Project structure
 

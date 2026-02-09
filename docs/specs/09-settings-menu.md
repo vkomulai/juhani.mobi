@@ -19,7 +19,8 @@ The menu displays (top to bottom):
 1. **Title**: "Asetukset" (Finnish) / "Settings" (English) — translated via `t('settings.title')`.
 
 2. **Sort Toggle**:
-   - A row with a checkbox and label "Järjestä automaattisesti" / "Sort Automatially".
+   - A row with a checkbox and label "Järjestä automaattisesti" / "Sort Automatically".
+   - **Note**: The translation key `settings.sortAutomatially` has a typo (missing 'c') — this is the existing key name in the app code.
    - Checkbox reflects `sortAutomatically` Redux state.
    - Clicking the row dispatches `SORT_CHANGED`, which toggles `sortAutomatically` (boolean flip via `!state`).
    - Default: enabled (`true`).

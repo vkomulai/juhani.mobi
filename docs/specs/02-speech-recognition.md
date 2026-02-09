@@ -68,7 +68,7 @@ For each word:
 
 ### Descriptive Words
 
-Treated as quantity words (trigger prepending): `maustamaton`, `rasvaton`, `kevyt`, `kulutus`, `sininen`, `punainen`, `vaalea`, `tumma`, `1/2`.
+Treated as quantity words (trigger prepending): `maustamaton`, `rasvaton`, `kevyt`, `kulutus`, `sininen`, `punainen`, `vaalea`, `tumma`. Note: `1/2` is also in this list in the source code, but it is the mapped output of `puoli` from the numbers map rather than a speech input.
 
 ### Adjective Detection
 
@@ -101,7 +101,7 @@ A word is a quantity word if ANY of:
 1. Pressing Add starts `webkitSpeechRecognition` with the correct language.
 2. Single words become individual items: `"banaani maito"` → `["banaani", "maito"]`.
 3. Number + noun compounds: `"yksi mansikka"` → `["1 mansikka"]`.
-4. Unit + noun compounds: `"puoli kiloa mansikoita"` → `["1/2 kiloa mansikoita"]`.
+4. Unit + noun compounds: `"puoli kiloa mansikoita"` → `["1/2 kiloa mansikoita"]`. Note: the algorithm processes left-to-right — `puoli` (quantity) is popped and prepended to `kiloa`, but `kiloa` (a unit/quantity word) is NOT popped when processing `mansikoita` because the already-prepended item `"1/2 kiloa"` is no longer a raw quantity word.
 5. Adjective + noun compounds: `"sveitsiläinen juusto"` → `["sveitsiläinen juusto"]`.
 6. Error correction: `"skype"` → `["skyr"]`.
 7. Duplicate words within utterance are skipped.
@@ -109,7 +109,7 @@ A word is a quantity word if ANY of:
 
 ## Edge Cases
 
-- Empty transcript: `tokenizeWords("")` produces `[{ name: "", collected: false }]` (single item with empty name — the empty string passes through).
+- **Known bug**: Empty transcript: `tokenizeWords("")` produces `[{ name: "", collected: false }]` (single item with empty name — the empty string passes through). Should logically return `[]` instead.
 - Transcript starting with a number: `"3 banaania"` → number detected as quantity, prepended to next word → `["3 banaania"]`.
 - Consecutive quantity words: `"puoli kilo"` → `puoli` becomes item, then `kilo` is a quantity word, pops `puoli` and prepends → `["1/2 kilo"]`.
 - Browser doesn't support `webkitSpeechRecognition`: `supportSpeechRecognition()` returns `false`; UI shows "Selaimesi EI tue puheentunnistusta".

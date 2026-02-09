@@ -169,7 +169,12 @@ Phase 1: Plan
 
   React 19 would require upgrading react-sortable-hoc → @dnd-kit, react-redux → v9 + redux v5, and verifying react-i18next — all at once. That's Phases 2+5+6 combined.
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+"⎿  You've hit your limit · resets 11am (Europe/Helsinki)"
 
+- doing the react 19 thing later
+- Done and log written to implemnettion log
+- runnign coderabbit:review agent from CC?? Why not run from command line separatelu
+---
 
 
 

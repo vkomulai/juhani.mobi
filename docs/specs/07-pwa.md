@@ -31,9 +31,9 @@ Icons are provided for Android, iOS, Chrome, and Firefox in multiple sizes (16x1
 
 ### Update Detection
 
-1. **On visibility change**: When the app comes back to the foreground (via `webkitvisibilitychange` event), the service worker is re-registered and `reg.update()` is called to check for new content.
+1. **On visibility change**: When the app comes back to the foreground (via `webkitvisibilitychange` event), the service worker is re-registered and `reg.update()` is called to check for new content. **Note**: Uses WebKit-prefixed `webkitvisibilitychange`/`webkitHidden` instead of the standard `visibilitychange`/`document.hidden`. This only works in WebKit-based browsers (Chrome, Edge, Safari) and breaks on Firefox.
 2. **On update found**: When a new service worker is installed:
-   - If there's an existing controller (update scenario): Posts `SKIP_WAITING` to the new worker, then reloads the page after a 1-second delay.
+   - If there's an existing controller (update scenario): Posts `SKIP_WAITING` to the new worker, then reloads the page after a 1-second delay. **UX concern**: This automatic reload could interrupt users mid-interaction. Consider showing a toast/prompt instead.
    - If no controller (first install): Logs "Content is cached for offline use."
 
 ### Update Flow
@@ -61,7 +61,7 @@ App comes to foreground
 ## Acceptance Criteria
 
 1. Manifest is accessible at `/manifest.json` with correct `name`, `display`, `share_target`.
-2. HTML includes `<link rel="manifest">` and `<meta name="theme-color" content="#000000">` (note: theme-color in HTML is `#000000`, differs from manifest's `#2F3BA2`).
+2. HTML includes `<link rel="manifest">` and `<meta name="theme-color" content="#000000">`. **Known inconsistency**: theme-color in HTML is `#000000` but manifest's `theme_color` is `#2F3BA2` — these should be aligned to the same value.
 3. Service worker registers in production only.
 4. App checks for SW updates when returning from background.
 5. New SW version triggers automatic page reload after 1 second.
@@ -69,7 +69,7 @@ App comes to foreground
 
 ## Edge Cases
 
-- Visibility change event uses the webkit-prefixed `webkitvisibilitychange` and `webkitHidden` — only works in WebKit-based browsers (Chrome on Android, which is the target).
+- **Known bug**: Visibility change event uses the webkit-prefixed `webkitvisibilitychange` and `webkitHidden` — only works in WebKit-based browsers (Chrome on Android, which is the target). Fix: use the standard `visibilitychange` event and `document.hidden` property, with a fallback to the webkit-prefixed versions.
 - Service worker URL is constructed from `process.env.PUBLIC_URL` — if PUBLIC_URL is misconfigured, registration will fail.
 - The `webkitvisibilitychange` listener is registered outside the `register()` function, so it runs even in development (though SW registration in it may fail gracefully).
 - First-time visitors: No controller exists, so the "update" flow doesn't trigger; content is simply cached.

@@ -26,7 +26,7 @@ Convert all remaining .js/.jsx files to .ts/.tsx. Add proper TypeScript interfac
 |---|---|
 | All `src/**/*.js` | Rename to `.ts` |
 | All `src/**/*.jsx` | Rename to `.tsx` |
-| All `src/**/*.test.js` | Rename to `.test.ts`, migrate from Jest to Vitest |
+| All `src/**/*.test.js` | Rename to `.test.ts` (or `.test.tsx` for files containing JSX), migrate from Jest to Vitest |
 | `tsconfig.json` | Enable `strict: true` |
 | `src/index.js` → `src/index.tsx` | Add `<React.StrictMode>` wrapper |
 | `.eslintrc` → `eslint.config.js` | Flat config with @typescript-eslint |
@@ -114,12 +114,13 @@ Note: StrictMode double-invokes effects in development. Verify speech recognitio
 
 ### 5. Migrate Jest → Vitest
 
-**vite.config.ts:**
+**vite.config.ts** (add the `test` property to your existing config):
 ```ts
 /// <reference types="vitest" />
 import { defineConfig } from 'vite'
 
 export default defineConfig({
+  // ... your existing Vite config (plugins, server, etc.)
   test: {
     globals: true,
     environment: 'jsdom',

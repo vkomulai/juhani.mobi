@@ -19,7 +19,7 @@ Users can share their shopping list with others via the Web Share API. The list 
 ### Guards
 
 - **Empty list**: If `shoppingItems` is empty or falsy, an `alert('Lisää ostoksia ennen listan jakamista!')` is shown. Share is aborted.
-- **No Web Share API**: If `navigator.share` is not available, an `alert('Jako mahdollista vain selaimella: Chrome 61 Android!!')` is shown. Share is aborted.
+- **No Web Share API**: If `navigator.share` is not available, an `alert('Jako mahdollista vain selaimella: Chrome 61 Android!!')` is shown. Share is aborted. **Note**: This alert message references Chrome 61 (2017) and is outdated — the Web Share API is now widely supported across modern browsers.
 
 ### Loading a Shared List (Inbound)
 
@@ -28,7 +28,7 @@ Users can share their shopping list with others via the Web Share API. The list 
 3. `SortableList.componentDidMount()` checks `match.params.id`.
 4. If an `id` exists, dispatches `fetchList(id)`.
 5. `fetchList` does `GET /list/{id}` → response JSON → dispatches `ITEMS_LIST_LOADED`.
-6. `ITEMS_LIST_LOADED` reducer **replaces** the entire `shoppingItems` array with the fetched items.
+6. `ITEMS_LIST_LOADED` reducer **replaces** the entire `shoppingItems` array with the fetched items. **Note**: This replaces the user's current list without confirmation, which may cause data loss if the user has unsaved items.
 
 ### Share Text Format Example
 
@@ -65,7 +65,7 @@ URL: https://www.juhani.mobi/l/{uuid}
 
 ## Edge Cases
 
-- Backend POST failure: Error is logged to console; share dialog may still open with the URL (the `shareList` call happens independently of the POST completion).
+- **Known bug**: Backend POST failure: Error is logged to console; share dialog may still open with the URL (the `shareList` call happens independently of the POST completion). This means a recipient could receive a URL pointing to a non-existent list. The share should ideally wait for POST completion before calling `navigator.share()`.
 - Backend GET failure for shared list: Error logged to console; list remains unchanged.
 - Shared list with empty items array from backend: replaces current list with `[]`.
 - Minutes formatting: single-digit minutes are zero-padded (e.g., `14.05` not `14.5`).

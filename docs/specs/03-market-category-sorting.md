@@ -41,7 +41,7 @@ Unknown items get order `99999` and sort to the end.
 - **Production**: Fetched from `GET /categories` API endpoint.
 - **Localhost**: Uses local `CategoryData.json` file (hardcoded check `location == 'http://localhost/'`).
 - Categories are loaded at module initialization time (`init()` called immediately).
-- **Note**: The localhost check uses `==` (loose equality) with the full URL string `'http://localhost/'`, which may not match `'http://localhost:3000/'` used by the dev server. This means the dev server likely fetches from the API.
+- **Known bug**: The localhost check compares the full URL string `'http://localhost/'`, which does not match `'http://localhost:3000/'` used by the dev server. Fix: use `location.hostname === 'localhost'` instead. This means the dev server currently fetches from the API.
 
 ### Unknown Item Reporting
 
@@ -67,7 +67,7 @@ Unknown items get order `99999` and sort to the end.
 
 ## Edge Cases
 
-- Fuse.js `fuzzy` is initialized asynchronously. If items are added before categories load, `fuzzy.search()` may throw or return no results.
-- The localhost check (`location == 'http://localhost/'`) may not match CRA's `http://localhost:3000/`, causing the dev server to attempt the API fetch.
+- Fuse.js `fuzzy` is initialized asynchronously. If items are added before categories load, `fuzzy.search()` may throw or return no results. Expected behavior: `getItemOrder()` should return `UNKNOWN_ITEM_ORDER` (99999) when Fuse.js is not yet initialized, rather than throwing.
+- The localhost check (`location == 'http://localhost/'`) does not match the dev server's `http://localhost:3000/`, causing the dev server to attempt the API fetch (see known bug above).
 - Items matching multiple categories: Fuse.js returns the best match (lowest score); `_.get(match, '[0].item.order')` takes the first result.
 - Empty category data (API error): `fetchCategoryData` catches errors and returns `[]`, meaning all items will be unknown order.

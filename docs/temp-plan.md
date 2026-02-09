@@ -30,7 +30,7 @@ Each phase document includes: overview, packages to add/remove, files to modify,
 ## Phase Summary
 
 ### Phase 1: CRA → Vite + TypeScript Foundation (Large)
-- Remove react-scripts, cra-append-sw
+- Remove react-scripts as build tool (replaced by Vite), remove cra-append-sw
 - Add vite, @vitejs/plugin-react, vite-plugin-pwa, typescript
 - Create vite.config.ts with src/ path alias (replaces NODE_PATH=src/)
 - Create tsconfig.json with allowJs:true
@@ -100,7 +100,7 @@ Each phase document includes: overview, packages to add/remove, files to modify,
 - Enable strict: true in tsconfig.json
 - Add React.StrictMode wrapper
 - Migrate unit tests from Jest to Vitest
-- Remove react-scripts dependency entirely
+- Remove any residual react-scripts dependency (kept for unit tests until Vitest migration)
 - Update ESLint to flat config with @typescript-eslint
 
 ### Phase 10: Backend API Modernization (Large, Independent)
