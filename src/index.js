@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import {
   BrowserRouter as Router,
   Route,
-  Switch
+  Routes
 } from 'react-router-dom'
 import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
@@ -42,10 +42,10 @@ sendApplicationLoadedEvent()
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <Router>
-      <Switch>
-        <Route path='/l/:id' component={App} />
-        <Route path='/' component={App} />
-      </Switch>
+      <Routes>
+        <Route path='/l/:id' element={<App />} />
+        <Route path='/' element={<App />} />
+      </Routes>
     </Router>
   </Provider>
 )

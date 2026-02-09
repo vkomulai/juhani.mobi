@@ -1,8 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { withRouter } from 'react-router'
+import { useParams } from 'react-router-dom'
 
-import ReactRouterPropTypes from 'react-router-prop-types'
 import './SortableList.css'
 import { SortableContainer, SortableElement } from 'react-sortable-hoc'
 
@@ -30,35 +29,38 @@ const Sortable = SortableContainer(({ shoppingItems, onCollected, onRemove }) =>
   )
 })
 
-export const SortableList = withRouter(
-  class SortableList extends React.Component {
-    static propTypes = {
-      shoppingItems: PropTypes.array.isRequired,
-      collectedItem: PropTypes.func.isRequired,
-      removeItem: PropTypes.func.isRequired,
-      onSortEnd: PropTypes.func.isRequired,
-      fetchList: PropTypes.func.isRequired,
-      match: ReactRouterPropTypes.match
-    }
+class SortableListInner extends React.Component {
+  static propTypes = {
+    shoppingItems: PropTypes.array.isRequired,
+    collectedItem: PropTypes.func.isRequired,
+    removeItem: PropTypes.func.isRequired,
+    onSortEnd: PropTypes.func.isRequired,
+    fetchList: PropTypes.func.isRequired,
+    listId: PropTypes.string
+  }
 
-    componentDidMount() {
-      if (this.props.match.params && this.props.match.params.id) {
-        this.props.fetchList(this.props.match.params.id)
-      }
-    }
-
-    render() {
-      return (
-        <div className="items">
-          <Sortable
-            shoppingItems={this.props.shoppingItems}
-            pressDelay={500}
-            onCollected={this.props.collectedItem}
-            onRemove={this.props.removeItem}
-            onSortEnd={this.props.onSortEnd}
-          />
-        </div>
-      )
+  componentDidMount() {
+    if (this.props.listId) {
+      this.props.fetchList(this.props.listId)
     }
   }
-)
+
+  render() {
+    return (
+      <div className="items">
+        <Sortable
+          shoppingItems={this.props.shoppingItems}
+          pressDelay={500}
+          onCollected={this.props.collectedItem}
+          onRemove={this.props.removeItem}
+          onSortEnd={this.props.onSortEnd}
+        />
+      </div>
+    )
+  }
+}
+
+export function SortableList(props) {
+  const { id } = useParams()
+  return <SortableListInner {...props} listId={id} />
+}
