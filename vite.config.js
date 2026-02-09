@@ -45,13 +45,11 @@ export default defineConfig({
         if (!id.match(/src\/.*\.js$/)) return null
         return transformWithEsbuild(code, id, {
           loader: 'jsx',
-          jsx: 'transform'
+          jsx: 'automatic'
         })
       }
     },
-    react({
-      jsxRuntime: 'classic'
-    }),
+    react(),
     VitePWA({
       registerType: 'prompt',
       injectRegister: null,

@@ -22,10 +22,10 @@ Juhani.mobi modernization from React 16 + CRA to React 18 + Vite + Zustand.
 ```
 Phase 1 (Vite+TS) → Phase 2 (React 18) → Phase 3 (Router v6)
                                          → Phase 4 (i18n)
-                                         → Phase 5 (Zustand) → Phase 6 (@dnd-kit)
+                                         → Phase 5 (Zustand) → Phase 6 (@dnd-kit) → Phase 2b (React 19)
 Phase 1 → Phase 7 (Monitoring)
 Phase 1 → Phase 8 (Remaining deps)
-Phases 1–8 → Phase 9 (TS completion)
+Phases 1–8, 2b → Phase 9 (TS completion)
 Phase 10 (Backend) — independent, can run in parallel
 ```
 

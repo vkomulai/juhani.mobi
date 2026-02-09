@@ -1,5 +1,5 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import {
   BrowserRouter as Router,
   Route,
@@ -39,7 +39,7 @@ load(store)
 initializeAnalytics()
 sendApplicationLoadedEvent()
 
-ReactDOM.render(
+createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <Router>
       <Switch>
@@ -47,8 +47,7 @@ ReactDOM.render(
         <Route path='/' component={App} />
       </Switch>
     </Router>
-  </Provider>,
-  document.getElementById('root')
+  </Provider>
 )
 
 register()
