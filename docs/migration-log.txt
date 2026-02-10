@@ -175,8 +175,8 @@ Phase 1: Plan
 - Done and log written to implemnettion log
 - runnign coderabbit:review agent from CC?? Why not run from command line separatelu
 ---
-
-
+> Start implementing phase 4
+> "Bug fixed: InfoView.jsx offline text was hardcoded in Finnish ('Selaimesi offline-tilassa!', 'Puheentunnistus ei toimi'). Now uses t() with existing translation keys, so it respects the selected language."
 
 TODO
 - Context. 
