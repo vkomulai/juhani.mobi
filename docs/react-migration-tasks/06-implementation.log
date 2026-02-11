@@ -1,0 +1,26 @@
+Phase 6: react-sortable-hoc → @dnd-kit
+========================================
+
+Packages changed:
+- Removed: react-sortable-hoc
+- Added: @dnd-kit/core, @dnd-kit/sortable, @dnd-kit/utilities
+
+Files modified:
+- src/store.js — Changed arrayMove import from react-sortable-hoc to @dnd-kit/sortable
+- src/components/SortableList/SortableList.jsx — Full rewrite: replaced SortableContainer/SortableElement HOCs with DndContext, SortableContext, and useSortable hook. Configured TouchSensor and MouseSensor with 500ms delay + 5px tolerance (matching previous pressDelay={500})
+- src/components/SortableList/SortableList.css — Added touch-action: none to li for proper mobile drag behavior
+- e2e/shopping-list.spec.ts — Updated drag-and-drop test comments for @dnd-kit
+
+Unit tests: 29/29 passed
+E2E tests: 41/41 passed
+
+Unit test output:
+  PASS src/App.test.js
+  PASS src/store.test.js
+  PASS src/api/MarketCategories.test.js
+  PASS src/api/SpeechRecognitionAPI.test.js
+  Test Suites: 4 passed, 4 total
+  Tests:       29 passed, 29 total
+
+E2E test output:
+  41 passed (1.3m)

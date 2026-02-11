@@ -48,8 +48,9 @@ test.describe('Persistence', () => {
 
     expect(storedData).not.toBeNull()
     const parsed = JSON.parse(storedData!)
-    expect(parsed).toHaveProperty('shoppingItems')
-    expect(parsed.shoppingItems.some((item: any) => item.name === 'juusto')).toBe(true)
+    expect(parsed).toHaveProperty('state')
+    expect(parsed.state).toHaveProperty('shoppingItems')
+    expect(parsed.state.shoppingItems.some((item: any) => item.name === 'juusto')).toBe(true)
   })
 
   test('sort toggle persists across reload', async ({ speechPage }) => {

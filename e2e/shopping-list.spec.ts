@@ -105,9 +105,8 @@ test.describe('Shopping List', () => {
   })
 
   test('drag and drop reorder', async ({ speechPage }) => {
-    // react-sortable-hoc with pressDelay={500}: mouse must stay still for
-    // 500ms before handlePress fires; target text spans to avoid
-    // shouldCancelStart cancelling on <input>/<button> elements.
+    // @dnd-kit MouseSensor with delay: 500, tolerance: 5
+    // Mouse must stay still for 500ms before drag activates.
     const itemSpans = speechPage.locator('span.item-normal')
     const initialNames = await itemSpans.allTextContents()
     expect(initialNames.length).toBeGreaterThanOrEqual(2)
@@ -120,17 +119,17 @@ test.describe('Shopping List', () => {
     expect(firstBox).not.toBeNull()
     expect(secondBox).not.toBeNull()
 
-    // 1. Position mouse on first item text
+    // 1. Position mouse on first item
     await speechPage.mouse.move(
       firstBox!.x + firstBox!.width / 2,
       firstBox!.y + firstBox!.height / 2
     )
 
-    // 2. Press and hold — DO NOT move during the 500ms pressDelay
+    // 2. Press and hold for 500ms activation delay
     await speechPage.mouse.down()
     await speechPage.waitForTimeout(600)
 
-    // 3. Drag to center of second item position
+    // 3. Drag to second item position
     await speechPage.mouse.move(
       firstBox!.x + firstBox!.width / 2,
       secondBox!.y + secondBox!.height / 2,

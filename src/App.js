@@ -1,29 +1,27 @@
 import React from 'react'
 import {
   ListArea,
-  Buttons
-} from 'components'
-import {
+  Buttons,
   EmptyButton,
   AddButton,
-  ShoppingList,
-  InfoArea,
+  SortableList,
+  InfoView,
   Header,
-  ApplicationMenu
-} from 'containers'
+  Menu
+} from 'components'
 import 'i18n'
 
 export const App = () => (
   <>
-    <ApplicationMenu />
+    <Menu />
     <Header />
-    <InfoArea />
+    <InfoView />
     <ListArea>
       <Buttons>
         <EmptyButton />
         <AddButton />
       </Buttons>
-      <ShoppingList />
+      <SortableList />
     </ListArea>
   </>
 )

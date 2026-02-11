@@ -5,49 +5,27 @@ import {
   Route,
   Routes
 } from 'react-router-dom'
-import { createStore, applyMiddleware } from 'redux'
-import thunkMiddleware from 'redux-thunk'
-import * as storage from 'redux-storage'
-import createEngine from 'redux-storage-engine-localstorage'
-import { Provider } from 'react-redux'
 
 import { register } from 'registerServiceWorker.js'
 import { App } from 'App'
-import shoppingApp from 'reducers'
 import {
   initializeAnalytics,
   sendApplicationLoadedEvent
 } from './api/Analytics'
-import {
-  listenToWindowEvent,
-  listenToShareTargetEvent
-} from './actions'
+import { setupWindowListeners, setupShareTargetListener } from './store'
 
-const engine = createEngine('juhani.mobi')
-const middleware = storage.createMiddleware(engine)
-const createStoreWithMiddleware = applyMiddleware(thunkMiddleware, middleware)(createStore)
-const load = storage.createLoader(engine)
-
-const reducer = storage.reducer(shoppingApp)
-const store = createStoreWithMiddleware(reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
-store.dispatch(listenToWindowEvent('offline'))
-store.dispatch(listenToWindowEvent('online'))
-store.dispatch(listenToShareTargetEvent())
-
-
-load(store)
+setupWindowListeners()
+setupShareTargetListener()
 initializeAnalytics()
 sendApplicationLoadedEvent()
 
 createRoot(document.getElementById('root')).render(
-  <Provider store={store}>
-    <Router>
-      <Routes>
-        <Route path='/l/:id' element={<App />} />
-        <Route path='/' element={<App />} />
-      </Routes>
-    </Router>
-  </Provider>
+  <Router>
+    <Routes>
+      <Route path='/l/:id' element={<App />} />
+      <Route path='/' element={<App />} />
+    </Routes>
+  </Router>
 )
 
 register()

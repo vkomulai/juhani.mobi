@@ -1,13 +1,40 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
+import { useStore } from 'store'
+import {
+  sendItemCollectedEvent,
+  sendItemRemovedEvent,
+  sendItemOrderChangedEvent
+} from 'api/Analytics'
+import {
+  DndContext,
+  closestCenter,
+  TouchSensor,
+  MouseSensor,
+  useSensor,
+  useSensors
+} from '@dnd-kit/core'
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  useSortable
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 import './SortableList.css'
-import { SortableContainer, SortableElement } from 'react-sortable-hoc'
 
-const SortableItem = SortableElement(({ item, onCollected, onRemove }) => {
+/* eslint-disable react/prop-types */
+const SortableItem = ({ item, onCollected, onRemove }) => {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: item.name
+  })
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition
+  }
+
   return (
-    <li key={item}>
+    <li ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <div className="items-container">
         <div className="item-container" onClick={() => onCollected(item)}>
           <input type="checkbox" checked={item.collected} readOnly />
@@ -17,50 +44,64 @@ const SortableItem = SortableElement(({ item, onCollected, onRemove }) => {
       </div>
     </li>
   )
-})
+}
+/* eslint-enable react/prop-types */
 
-const Sortable = SortableContainer(({ shoppingItems, onCollected, onRemove }) => {
-  return (
-    <ul>
-      {shoppingItems.map((value, index) => (
-        <SortableItem key={`item-${index}`} index={index} item={value} onCollected={onCollected} onRemove={onRemove} />
-      ))}
-    </ul>
+export function SortableList() {
+  const { id } = useParams()
+  const shoppingItems = useStore((s) => s.shoppingItems)
+  const removeItem = useStore((s) => s.removeItem)
+  const collectedItemPressed = useStore((s) => s.collectedItemPressed)
+  const itemsReOrdered = useStore((s) => s.itemsReOrdered)
+  const fetchList = useStore((s) => s.fetchList)
+
+  useEffect(() => {
+    if (id) {
+      fetchList(id)
+    }
+  }, [id, fetchList])
+
+  const sensors = useSensors(
+    useSensor(TouchSensor, { activationConstraint: { delay: 500, tolerance: 5 } }),
+    useSensor(MouseSensor, { activationConstraint: { delay: 500, tolerance: 5 } })
   )
-})
 
-class SortableListInner extends React.Component {
-  static propTypes = {
-    shoppingItems: PropTypes.array.isRequired,
-    collectedItem: PropTypes.func.isRequired,
-    removeItem: PropTypes.func.isRequired,
-    onSortEnd: PropTypes.func.isRequired,
-    fetchList: PropTypes.func.isRequired,
-    listId: PropTypes.string
+  const handleRemove = (item) => {
+    sendItemRemovedEvent()
+    removeItem(item)
   }
 
-  componentDidMount() {
-    if (this.props.listId) {
-      this.props.fetchList(this.props.listId)
+  const handleCollected = (item) => {
+    sendItemCollectedEvent()
+    collectedItemPressed(item)
+  }
+
+  const handleDragEnd = (event) => {
+    const { active, over } = event
+    if (over && active.id !== over.id) {
+      sendItemOrderChangedEvent()
+      const oldIndex = shoppingItems.findIndex(i => i.name === active.id)
+      const newIndex = shoppingItems.findIndex(i => i.name === over.id)
+      itemsReOrdered(oldIndex, newIndex)
     }
   }
 
-  render() {
-    return (
-      <div className="items">
-        <Sortable
-          shoppingItems={this.props.shoppingItems}
-          pressDelay={500}
-          onCollected={this.props.collectedItem}
-          onRemove={this.props.removeItem}
-          onSortEnd={this.props.onSortEnd}
-        />
-      </div>
-    )
-  }
-}
-
-export function SortableList(props) {
-  const { id } = useParams()
-  return <SortableListInner {...props} listId={id} />
+  return (
+    <div className="items">
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={shoppingItems.map(i => i.name)} strategy={verticalListSortingStrategy}>
+          <ul>
+            {shoppingItems.map(item => (
+              <SortableItem
+                key={item.name}
+                item={item}
+                onCollected={handleCollected}
+                onRemove={handleRemove}
+              />
+            ))}
+          </ul>
+        </SortableContext>
+      </DndContext>
+    </div>
+  )
 }
