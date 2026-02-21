@@ -1,23 +1,20 @@
-import ReactGA from 'react-ga'
-import Raven from 'raven-js'
+import * as Sentry from '@sentry/react'
+
 const config = {
-  ga: 'UA-113979141-1',
   sentry: {
-    account: '90f802bdd8404cd3a97e2e37b55661c4',
-    project: '286831'
+    dsn: 'https://90f802bdd8404cd3a97e2e37b55661c4@sentry.io/286831'
   },
-  hotjar: {
-    id: '778873',
-    version: '6'
+  ga4: {
+    measurementId: 'G-XXXXXXXXXX' // TODO: Get from GA4 console
   }
 }
 
-const isProduction = () => location.hostname !== 'localhost'//  eslint-disable-line
+const isProduction = () => location.hostname !== 'localhost' //  eslint-disable-line
 
 const sendAnalyticsEvent = (eventName, eventValue) => {
   if (isProduction()) {
     try {
-      ReactGA.event({ category: 'UserInteraction', action: eventName, value: eventValue })
+      window.gtag('event', eventName, { event_category: 'UserInteraction', value: eventValue })
     } catch (e) {
       console.log('sendAnalyticsEvent(): ', eventName, e) //  eslint-disable-line
     }
@@ -27,26 +24,19 @@ const sendAnalyticsEvent = (eventName, eventValue) => {
 }
 
 export const sendClientError = (error) => {
-  Raven.captureMessage(error, {
-    level: 'error' // one of 'info', 'warning', or 'error'
-  })
+  Sentry.captureMessage(error, 'error')
 }
 
 export const sendUnknownItems = (items) => {
   if (items && items.length > 0) {
-    Raven.captureMessage(`Unknown items added to list: [${items.join(',')}]`, {
-      level: 'info' // one of 'info', 'warning', or 'error'
-    })
+    Sentry.captureMessage(`Unknown items added to list: [${items.join(',')}]`, 'info')
   }
 }
 
 export const initializeAnalytics = () => {
-  if (isProduction || process.envs.REACT_APP_SIMULATE_ANALYTICS_PRODUCTION) {
-    ReactGA.initialize(config.ga)
-    Raven
-      .config(`https://${config.sentry.account}@sentry.io/${config.sentry.project}`)
-      .install()
-    console.log('initializeAnalytics() : done')//  eslint-disable-line
+  if (isProduction() || process.env.REACT_APP_SIMULATE_ANALYTICS_PRODUCTION) {
+    Sentry.init({ dsn: config.sentry.dsn })
+    console.log('initializeAnalytics() : done') //  eslint-disable-line
   }
 }
 
@@ -77,5 +67,3 @@ export const sendItemRemovedEvent = () => {
 export const sendItemsRecognizedEvent = (items) => {
   sendAnalyticsEvent('ItemsRecognized', items.toString())
 }
-
-

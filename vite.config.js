@@ -85,7 +85,7 @@ export default defineConfig({
   ],
   define: {
     'process.env.PUBLIC_URL': JSON.stringify(''),
-    'process.envs': 'undefined'
+    'process.env.REACT_APP_SIMULATE_ANALYTICS_PRODUCTION': JSON.stringify(process.env.REACT_APP_SIMULATE_ANALYTICS_PRODUCTION || '')
   },
   optimizeDeps: {
     esbuildOptions: {

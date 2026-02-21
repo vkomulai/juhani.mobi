@@ -177,6 +177,16 @@ Phase 1: Plan
 ---
 > Start implementing phase 4
 > "Bug fixed: InfoView.jsx offline text was hardcoded in Finnish ('Selaimesi offline-tilassa!', 'Puheentunnistus ei toimi'). Now uses t() with existing translation keys, so it respects the selected language."
+---
+> Start implementing phase 5 (no planning mode)
+> review with coderabbit
+---
+> Start implementing phase 6 (no planning mode)
+> review with coderabbit
+---
+> Start implementing phase 7 (no planning mode)
+> review with coderabbit
+
 
 TODO
 - Context. 
