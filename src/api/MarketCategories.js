@@ -4,8 +4,8 @@ import { getApiHost } from 'api/Utils'
 import testData from 'api/CategoryData.json'
 
 export const fetchCategoryData = () => {
-  if (location == 'http://localhost/') {//  eslint-disable-line
-    return Promise.resolve(testData)  //  Ugly hack, fix this later
+  if (location.hostname === 'localhost') {
+    return Promise.resolve(testData)
   }
 
 
@@ -22,7 +22,6 @@ let fuzzy
 const init = () => {
   fetchCategoryData().then((categories) => {
     const options = {
-      shouldSort: true,
       includeScore: true,
       threshold: 0.3, //  threshold 0.0 : 100% match,  threshold 1.0 : very unlikely match
       keys: ['items']
