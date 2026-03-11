@@ -7,7 +7,6 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@sentry/react": "^10.38.0",
     "classnames": "^2.2.5",
-    "eslint-plugin-react": "^7.11.1",
     "fuse.js": "^6.6.2",
     "i18next": "^25.8.4",
     "react": "^18.3.1",
@@ -39,21 +38,28 @@
     "src/**/*.css": "stylelint"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.58.2",
-    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^14.3.1",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@types/uuid": "^10.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.57.0",
+    "@typescript-eslint/parser": "^8.57.0",
     "@vitejs/plugin-react": "^5.1.3",
+    "@vitest/coverage-v8": "^4.0.18",
+    "eslint-plugin-react": "^7.37.5",
+    "globals": "^17.4.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.3.3",
-    "react-scripts": "^2.1.3",
     "stylelint": "^17.3.0",
     "stylelint-config-standard": "^40.0.0",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.57.0",
     "vite": "^7.3.1",
-    "vite-plugin-pwa": "^1.2.0"
-  },
-  "overrides": {
-    "cheerio": "1.0.0-rc.12"
+    "vite-plugin-pwa": "^1.2.0",
+    "vitest": "^4.0.18"
   },
   "browserslist": [
     ">0.2%",
