@@ -25,8 +25,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test-ci": "vitest run --coverage",
-    "eslint": "eslint src/*.js src/**/*.js src/**/*.jsx",
-    "eslint-fix": "eslint src/*.js src/**/*.js src/**/*.jsx --fix",
+    "eslint": "eslint src/",
+    "eslint-fix": "eslint src/ --fix",
     "csslint": "stylelint src/*.css src/**/*.css",
     "csslint-fix": "stylelint src/*.css src/**/*.css --fix",
     "test:e2e": "bash -c 'source $NVM_DIR/nvm.sh && nvm exec 22 npx playwright test'",
@@ -35,7 +35,7 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "src/**/*.{js,jsx}": "eslint",
+    "src/**/*.{ts,tsx}": "eslint",
     "src/**/*.css": "stylelint"
   },
   "devDependencies": {
