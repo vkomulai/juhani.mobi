@@ -141,3 +141,26 @@ benefit — the underlying site breakage makes the tests fail either way.
 | `api/src/auth.ts` | Import style, null checks for env vars |
 | `api/src/scraper.ts` | Import style, String → string |
 | `api/src/scraper.test.ts` | Fixed comma-expression syntax |
+
+## CodeRabbit Review Fixes
+
+7 findings, all addressed. See `docs/coderabbit-findings-phase10.log` for details.
+
+- scraper.ts: added runtime validation for scraped data
+- database.ts: fixed `ingrediends` typo → `ingredients`
+- database.ts: fixed incomplete error message in saveCategoryData
+- serverless.yml: added fallback for apiHostMap unknown stages
+- phase10-claudeplan-v2.md: fixed `ts-lint` typo, clarified scrape-it version
+- .nvmrc Node 24 suggestion: rejected (AWS Lambda has no nodejs24.x runtime)
+
+## Final Status
+
+All 8 plan steps complete. Migration verified:
+
+| Check | Result |
+|---|---|
+| `tsc --noEmit` | Clean |
+| `sls package --stage dev` | Packages successfully |
+| Deleted files (webpack, source-map-install, tslint) | Confirmed gone |
+| CodeRabbit review | All findings fixed |
+| `npm test` (scraper) | Fails — pre-existing site breakage, not from migration |
