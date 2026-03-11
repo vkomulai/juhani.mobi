@@ -28,7 +28,11 @@ export const scrapeRecipe = async (url: string): Promise<Ingredient[]> => {
   }
   if (dataMapping) {
     const response = await scrapeIt(url, dataMapping)
-    return (response.data as { ingredients: Ingredient[] }).ingredients
+    const data = response.data as { ingredients?: Ingredient[] }
+    if (!data.ingredients || !Array.isArray(data.ingredients)) {
+      throw new Error('Failed to scrape ingredients from the page')
+    }
+    return data.ingredients
   } else {
     throw 'unknown source'
   }

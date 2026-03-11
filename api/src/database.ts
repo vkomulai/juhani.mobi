@@ -16,13 +16,13 @@ const client =
 
 const dynamoDb = DynamoDBDocumentClient.from(client)
 
-export async function saveRecipe(recipeUrl: string, ingrediends: Ingredient[]): Promise<void> {
+export async function saveRecipe(recipeUrl: string, ingredients: Ingredient[]): Promise<void> {
   try {
     await dynamoDb.send(new PutCommand({
       TableName: RecipesTable,
       Item: {
         RecipeUrl: recipeUrl,
-        Ingredients: ingrediends
+        Ingredients: ingredients
       }
     }))
   } catch (err) {
@@ -97,7 +97,7 @@ export async function saveCategoryData(data: Category): Promise<void> {
       Item: data
     }))
   } catch (err) {
-    console.error(`save() : data=${data} failed, err=${err}`)
-    throw 'Saving updated Category Data'
+    console.error(`saveCategoryData() : data=${JSON.stringify(data)} failed, err=${err}`)
+    throw new Error('Saving updated Category Data failed')
   }
 }

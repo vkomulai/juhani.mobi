@@ -73,8 +73,8 @@ custom:
     dev: api-dev
     prod: api
   customDomain:
-    domainName: "${self:custom.apiHostMap.${sls:stage}}.juhani.mobi"
-    certificateName: "${self:custom.apiHostMap.${sls:stage}}.juhani.mobi"
+    domainName: "${self:custom.apiHostMap.${sls:stage}, self:custom.apiHostMap.dev}.juhani.mobi"
+    certificateName: "${self:custom.apiHostMap.${sls:stage}, self:custom.apiHostMap.dev}.juhani.mobi"
     createRoute53Record: true
     basePath: ""
     stage: "${sls:stage}"

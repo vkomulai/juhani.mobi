@@ -1,0 +1,143 @@
+# Phase 10: Backend API Modernization — Implementation Log
+
+## Step 1: Upgrade Node.js runtime + TypeScript
+
+- `.nvmrc`: v10.15 → 20
+- `tsconfig.json`: Full rewrite for TS 5 with strict mode, ES2022 target, esModuleInterop
+- `serverless.yml`: nodejs10.x → nodejs20.x
+- `package.json`: typescript ^2.9.2 → ^5.9, @types/node ^10 → ^20
+
+## Step 2: Replace webpack with esbuild
+
+- Deleted `webpack.config.js`, `source-map-install.js`
+- Removed webpack, serverless-webpack, ts-loader, source-map-support, path-loader
+- Added serverless-esbuild ^1.54, esbuild ^0.25
+- Updated serverless.yml plugin: serverless-webpack → serverless-esbuild
+- Added custom.esbuild config (bundle, sourcemap, target node20, platform node)
+
+## Step 3: Migrate AWS SDK v2 → v3
+
+- Removed aws-sdk ^2.573.0, lodash, @types/lodash
+- Added @aws-sdk/client-dynamodb ^3.750, @aws-sdk/lib-dynamodb ^3.750
+- Rewrote `database.ts`:
+  - DynamoDB.DocumentClient → DynamoDBDocumentClient from @aws-sdk/lib-dynamodb
+  - `.put(params).promise()` → `.send(new PutCommand(params))`
+  - `.get(params).promise()` → `.send(new GetCommand(params))`
+  - `.scan(params).promise()` → `.send(new ScanCommand(params))`
+  - Replaced `_.get(result, 'Item.Ingredients', [])` with `result.Item?.Ingredients ?? []`
+
+## Step 4: Upgrade Express + serverless-http + middleware
+
+- express ^4.17.1 → ^4.21
+- serverless-http ^2.3.0 → ^3
+- express-basic-auth ^1.2.0 → ^1.2.1
+- Removed body-parser, @types/body-parser — using express.json() + express.urlencoded()
+- Updated all imports to default import style (with esModuleInterop)
+
+## Step 5: Fix TypeScript strict mode errors
+
+- `String` (wrapper type) → `string` (primitive) in database.ts, routes.ts, scraper.ts
+- `auth.ts`: Added null checks for BASIC_AUTH_USER/BASIC_AUTH_PASSWORD env vars
+- `routes.ts`: `req.query.url` typed as `string | undefined` with assertion
+- `scraper.ts`: Typed scrapeIt response with cast instead of `any`
+- `scraper.test.ts`: Fixed comma-expression syntax (`,` after `it()` → `)`)
+- `types.ts`: Left `ListItem extends Category` as-is (existing API contract)
+
+## Step 6: Upgrade Serverless Framework 1 → 3
+
+- serverless ~1.71.3 → ^3
+- serverless-offline ^4.10.6 → ^13
+- serverless-domain-manager ^2.6.13 → ^7
+- serverless-dynamodb-local ^0.2.38 → serverless-dynamodb ^0.2
+- serverless-plugin-warmup ^4.3.3-rc.1 → ^8
+- @types/aws-lambda ^8.10.36 → ^8.10.145
+
+Serverless.yml v3 format changes:
+- `service.name: x` → `service: x`
+- `iamRoleStatements` → `iam.role.statements` (had to fix indentation for nested YAML)
+- `${ssm:/path~true}` → `${ssm:/path}` (decryption is default in v3)
+- `${opt:stage, self:provider.stage}` → `${sls:stage}` (self:provider.stage doesn't resolve in v3)
+- `usagePlan` moved under `apiGateway` (unrecognized at provider level in v3)
+- Warmup plugin v8: nested `default:` config, `enabled: prod`, `events:` array
+- Function-level warmup: `warmup: true` → `warmup.default.enabled: true`
+- Custom domain: replaced nested variable interpolation `${self:provider.environment.${opt:stage}_api_host}`
+  with custom map lookup `${self:custom.apiHostMap.${sls:stage}}` (v3 doesn't support nested var refs)
+
+## Step 7: Upgrade Jest + ts-jest, remove TSLint
+
+- jest ^24.1.0 → ^29, ts-jest ^23.10.5 → ^29, @types/jest ^24 → ^29
+- Deleted `tslint.json`
+- Removed ts-lint, tslint-config-standard, dynamodb-admin from devDependencies
+- jest.config.js unchanged (ts-jest v29 is backwards compatible with existing config)
+
+## Step 8: Update scraper dependency
+
+Kept scrape-it at ^5.2.0 (did not upgrade to v6). See challenges below.
+
+## Challenges
+
+### Serverless esbuild + warmup plugin conflict
+
+The serverless-plugin-warmup generates a synthetic Lambda function (`warmUpPluginDefault`)
+with an `.mjs` handler file. serverless-esbuild couldn't find/compile this generated function.
+
+Solution: Two changes needed:
+1. Plugin order: warmup listed before esbuild so it generates files first
+2. `resolveExtensions: [.ts, .js, .mjs]` in esbuild config to handle the .mjs handler
+
+### esbuild + scrape-it bundling failure
+
+esbuild failed to bundle scrape-it because its dependency chain (scrape-it → cheerio-req →
+cheerio@old) contains `require('./package')` to load package.json, which esbuild can't resolve.
+
+Solution: Mark scrape-it as `external` in esbuild config. This means scrape-it and its
+dependencies are included as node_modules in the Lambda artifact rather than being bundled
+into the single JS file. This works fine — it just means the Lambda zip is slightly larger.
+
+### Scraper tests: kotikokki.net site structure changed (pre-existing breakage)
+
+The scraper tests are **live HTTP integration tests** that scrape real pages from kotikokki.net.
+All 4 tests return 0 ingredients. Investigation showed:
+
+- The site returns HTTP 200 and the HTML body is 131KB
+- `curl` output contains "ingredient" text (11 matches via grep)
+- But the actual `.ingredient` CSS class that the scraper selects is **not present**
+  in the server-rendered HTML received by scrape-it/cheerio/axios
+
+The site likely moved to client-side rendering (JavaScript) for recipe ingredients.
+The HTML returned to a simple HTTP client no longer contains the `.ingredient` elements
+that the scraper CSS selectors target. This is confirmed by testing with both scrape-it
+v5 and v6 — same empty result.
+
+This is a **pre-existing external site breakage**, not caused by our upgrade. The scraper
+feature itself (recipe scraping from kotikokki.net) is effectively broken regardless of
+our dependency versions. Fixing it would require either a headless browser approach
+(Puppeteer/Playwright) or finding new CSS selectors that match the current site structure.
+
+We kept scrape-it at v5.2.0 since upgrading to v6 would introduce API changes with no
+benefit — the underlying site breakage makes the tests fail either way.
+
+## Verification Results
+
+- `npx tsc --noEmit` — clean, no TypeScript errors
+- `npx sls package --stage dev` — packages successfully (two zips: main function + warmup)
+- `npm test` — scraper tests fail (external site breakage, see above)
+
+## Files Changed
+
+| File | Action |
+|---|---|
+| `api/.nvmrc` | Modified: v10.15 → 20 |
+| `api/tsconfig.json` | Rewritten for TS 5 strict |
+| `api/package.json` | Major dependency updates |
+| `api/package-lock.json` | Regenerated |
+| `api/serverless.yml` | Runtime, plugins, IAM format, SSM syntax, warmup v8 |
+| `api/webpack.config.js` | Deleted |
+| `api/source-map-install.js` | Deleted |
+| `api/tslint.json` | Deleted |
+| `api/src/server.ts` | ES import style, Express built-in middleware |
+| `api/src/database.ts` | Full rewrite for AWS SDK v3, removed lodash |
+| `api/src/routes.ts` | Import style, strict type fixes |
+| `api/src/auth.ts` | Import style, null checks for env vars |
+| `api/src/scraper.ts` | Import style, String → string |
+| `api/src/scraper.test.ts` | Fixed comma-expression syntax |
