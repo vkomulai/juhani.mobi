@@ -19,7 +19,7 @@ setupShareTargetListener()
 initializeAnalytics()
 sendApplicationLoadedEvent()
 
-createRoot(document.getElementById('root')).render(
+createRoot(document.getElementById('root')!).render(
   <Router>
     <Routes>
       <Route path='/l/:id' element={<App />} />

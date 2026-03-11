@@ -6,11 +6,11 @@ import { useStore } from 'store'
 import './Menu.css'
 import versionInfo from 'versionInfo.json'
 
-function changeLanguage() {
+function changeLanguage(): void {
   i18n.changeLanguage(getNewLanguage())
 }
 
-function getNewLanguage() {
+function getNewLanguage(): string {
   return i18n.language === 'fi' ? 'en' : 'fi'
 }
 
@@ -40,8 +40,8 @@ export const Menu = () => {
       </div>
       <div className="version item">
         <span>
-          {t('settings.commit')}: {versionInfo.commit.substring(0, 6)} <br />
-          {t('settings.buildDate')}: {versionInfo.buildDate}
+          {t('settings.commit')}: {(versionInfo as { commit: string, buildDate: string }).commit.substring(0, 6)} <br />
+          {t('settings.buildDate')}: {(versionInfo as { commit: string, buildDate: string }).buildDate}
         </span>
       </div>
     </BurgerMenu>

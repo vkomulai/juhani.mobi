@@ -10,11 +10,32 @@ import {
   sendClientError,
   sendUnknownItems
 } from 'api/Analytics'
+import { ShoppingItem } from 'types'
+
+interface StoreState {
+  shoppingItems: ShoppingItem[]
+  listening: boolean
+  isSpeechRecognitionSupported: boolean
+  onBoardingCompleted: boolean
+  isOnline: boolean
+  sortAutomatically: boolean
+  addItemPressed: () => void
+  itemsRecognized: (recognizedItems: ShoppingItem[]) => void
+  removeItem: (item: ShoppingItem) => void
+  collectedItemPressed: (item: ShoppingItem) => void
+  readyPressed: () => void
+  itemsReOrdered: (oldIndex: number, newIndex: number) => void
+  onBoardingComplete: () => void
+  setOnline: (online: boolean) => void
+  setSortAutomatically: () => void
+  fetchList: (listId: string) => void
+  storeList: (listId: string) => void
+}
 
 //  Ugly haxxx for local env
-const DEFAULT_ITEMS = location && location.hostname !== 'localhost' ? //  eslint-disable-line
-  [] :
-  [{
+const DEFAULT_ITEMS: ShoppingItem[] = location && location.hostname !== 'localhost'
+  ? []
+  : [{
     name: 'banaani',
     collected: false,
     index: 0
@@ -32,7 +53,7 @@ const DEFAULT_ITEMS = location && location.hostname !== 'localhost' ? //  eslint
     index: 3
   }]
 
-export const useStore = create(
+export const useStore = create<StoreState>()(
   persist(
     (set, get) => ({
       // State
@@ -46,7 +67,7 @@ export const useStore = create(
       // Actions
       addItemPressed: () => set({ listening: true }),
 
-      itemsRecognized: (recognizedItems) => {
+      itemsRecognized: (recognizedItems: ShoppingItem[]) => {
         const { shoppingItems, sortAutomatically } = get()
         const existingNames = new Set(shoppingItems.map(i => i.name))
         const merged = [...shoppingItems, ...recognizedItems.filter(i => !existingNames.has(i.name))]
@@ -60,11 +81,11 @@ export const useStore = create(
         set({ shoppingItems: items, listening: false })
       },
 
-      removeItem: (item) => set((state) => ({
+      removeItem: (item: ShoppingItem) => set((state) => ({
         shoppingItems: state.shoppingItems.filter(v => v.name !== item.name)
       })),
 
-      collectedItemPressed: (item) => set((state) => {
+      collectedItemPressed: (item: ShoppingItem) => set((state) => {
         const newItems = state.shoppingItems.map((current, idx) => {
           if (item && item.name === current.name) {
             let lastCollectedIndex = state.shoppingItems.findIndex(v => v.collected)
@@ -82,13 +103,13 @@ export const useStore = create(
               index: idx
             }
           }
-        }).sort((a, b) => a.index - b.index)
+        }).sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
         return { shoppingItems: newItems }
       }),
 
       readyPressed: () => set({ shoppingItems: [] }),
 
-      itemsReOrdered: (oldIndex, newIndex) => set((state) => ({
+      itemsReOrdered: (oldIndex: number, newIndex: number) => set((state) => ({
         shoppingItems: arrayMove(state.shoppingItems, oldIndex, newIndex)
       })),
 
@@ -96,13 +117,13 @@ export const useStore = create(
         onBoardingCompleted: !state.onBoardingCompleted
       })),
 
-      setOnline: (online) => set({ isOnline: online }),
+      setOnline: (online: boolean) => set({ isOnline: online }),
 
       setSortAutomatically: () => set((state) => ({
         sortAutomatically: !state.sortAutomatically
       })),
 
-      fetchList: (listId) => {
+      fetchList: (listId: string) => {
         fetch(`${getApiHost()}/list/${listId}`, {
           method: 'GET',
           headers: {
@@ -111,15 +132,14 @@ export const useStore = create(
           }
         }).then((response) => {
           return response.json()
-        }).then((items) => {
+        }).then((items: ShoppingItem[]) => {
           set({ shoppingItems: items })
         }).catch(error =>
-          // eslint-disable-next-line no-console
           console.error('Fetching list failed: ', error)
         )
       },
 
-      storeList: (listId) => {
+      storeList: (listId: string) => {
         const { shoppingItems } = get()
         fetch(`${getApiHost()}/list/${listId}`, {
           method: 'POST',
@@ -129,7 +149,6 @@ export const useStore = create(
           },
           body: JSON.stringify(shoppingItems)
         }).catch(error =>
-          // eslint-disable-next-line no-console
           console.error('Storing list failed: ', error)
         )
       }
@@ -142,21 +161,17 @@ export const useStore = create(
         sortAutomatically: state.sortAutomatically
       }),
       merge: (persisted, current) => {
-        // Handle migration from redux-storage format (no 'state' wrapper)
-        // redux-storage stored: {"shoppingItems":[...],"listening":false,...}
-        // zustand persist stores: {"state":{...},"version":0}
-        // When zustand reads old format, persisted will be the raw object
         if (persisted && typeof persisted === 'object') {
-          return { ...current, ...persisted }
+          return { ...(current as StoreState), ...(persisted as Partial<StoreState>) }
         }
-        return current
+        return current as StoreState
       }
     }
   )
 )
 
 // Window event listeners
-export const setupWindowListeners = () => {
+export const setupWindowListeners = (): void => {
   window.addEventListener('offline', () => {
     useStore.getState().setOnline(navigator.onLine)
   })
@@ -165,17 +180,15 @@ export const setupWindowListeners = () => {
   })
 }
 
-export const setupShareTargetListener = () => {
+export const setupShareTargetListener = (): void => {
   window.addEventListener('DOMContentLoaded', () => {
-    const url = new URL(window.location)
+    const url = new URL(window.location.href)
     if (url.searchParams && url.searchParams.get('url')) {
-      const paramUrl = url.searchParams && url.searchParams.get('url')
-      const paramText = (url.searchParams && url.searchParams.get('text')) || ''
-      const paramTitle = (url.searchParams && url.searchParams.get('title')) || ''
+      const paramUrl = url.searchParams.get('url')
+      const paramText = url.searchParams.get('text') || ''
+      const paramTitle = url.searchParams.get('title') || ''
       const recipeUrl = paramUrl || findUrlFromText(paramText) || findUrlFromText(paramTitle)
-      //  Clean the url from the share target content
-      history.pushState({}, null, window.location.origin) //  eslint-disable-line no-restricted-globals
-      /** https://bugs.chromium.org/p/chromium/issues/detail?id=789379  */
+      history.pushState({}, '', window.location.origin)
       if (recipeUrl) {
         scrapeRecipe(recipeUrl)
           .then(items => {
@@ -190,7 +203,7 @@ export const setupShareTargetListener = () => {
   })
 }
 
-const findUrlFromText = (text) => {
+const findUrlFromText = (text: string): string | undefined => {
   const match = text.match(/^[\S\s]*\s*(?<url>https?:\/\/[^\s]+)$/)
-  return match && match.groups && match.groups.url
+  return match?.groups?.url
 }

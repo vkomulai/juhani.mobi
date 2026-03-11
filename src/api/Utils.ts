@@ -1,5 +1,5 @@
-export const getApiHost = () => {
-  return location && location.hostname !== 'localhost' ? //  eslint-disable-line
-    'https://api.juhani.mobi' :
-    ''
+export const getApiHost = (): string => {
+  return location && location.hostname !== 'localhost'
+    ? 'https://api.juhani.mobi'
+    : ''
 }

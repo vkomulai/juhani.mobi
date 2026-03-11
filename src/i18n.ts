@@ -5,7 +5,7 @@ import translations from 'translations.json'
 i18n
   .use(initReactI18next)
   .init({
-    resources: translations,
+    resources: translations as Record<string, Record<string, Record<string, string>>>,
     lng: 'fi',
     fallbackLng: 'fi',
     debug: false,
@@ -18,7 +18,7 @@ i18n
     }
   })
 
-export const getLocaleLang = () => {
+export const getLocaleLang = (): string => {
   return i18n.language === 'fi' ? 'fi-FI' : 'en-GB'
 }
 

@@ -1,4 +1,6 @@
-const numbers = {
+import { ShoppingItem } from 'types'
+
+const numbers: Record<string, number | string> = {
   'yksi': 1,
   'kaksi': 2,
   'kolme': 3,
@@ -12,7 +14,7 @@ const numbers = {
   'puoli': '1/2'
 }
 
-const units = {
+const units: Record<string, string> = {
   'gramma': 'g',
   'grammaa': 'g',
   'g': 'g',
@@ -26,7 +28,7 @@ const units = {
   'metriä': 'm',
   'm': 'm'
 }
-const descriptive = [
+const descriptive: string[] = [
   'maustamaton',
   'rasvaton',
   'kevyt',
@@ -38,26 +40,26 @@ const descriptive = [
   '1/2'
 ]
 
-const knownUnrecognizedWords = {
+const knownUnrecognizedWords: Record<string, string> = {
   'skype': 'skyr'
 }
 
-export const supportSpeechRecognition = () => 'webkitSpeechRecognition' in window
+export const supportSpeechRecognition = (): boolean => 'webkitSpeechRecognition' in window
 
-export const isOnline = () => navigator.onLine
+export const isOnline = (): boolean => navigator.onLine
 
-export const startListening = (language, onRecognized) => {
-  try { 
-    const recognition = new webkitSpeechRecognition() // eslint-disable-line
+export const startListening = (language: string, onRecognized: (items: ShoppingItem[]) => void): void => {
+  try {
+    const recognition = new webkitSpeechRecognition()
     recognition.continuous = true
     recognition.interimResults = false
     recognition.maxAlternatives = 1
     recognition.lang = language
     let final_transcript = ''
-    let recognizedItems = []
+    let recognizedItems: ShoppingItem[] = []
     recognition.start()
 
-    recognition.onresult = event => {
+    recognition.onresult = (event: Event & { resultIndex: number, results: SpeechRecognitionResultList }) => {
       for (let i = event.resultIndex; i < event.results.length; ++i) {
         if (event.results[i].isFinal) {
           final_transcript = event.results[i][0].transcript
@@ -72,17 +74,17 @@ export const startListening = (language, onRecognized) => {
     }
     recognition.onspeechend = () => onRecognized(recognizedItems)
   } catch (e) {
-    console.log('startListening(): ', e) // eslint-disable-line
+    console.log('startListening(): ', e)
     onRecognized([])
   }
 }
 
-export const tokenizeWords = words => {
+export const tokenizeWords = (words: string): ShoppingItem[] => {
   const tokenizedRawWords = words.split(' ')
-  return tokenizedRawWords.reduce((tokenized, word) => {
+  return tokenizedRawWords.reduce((tokenized: ShoppingItem[], word: string) => {
     if (!alreadyRecognized(word, tokenized)) {
       const prevWord = tokenized.length > 0 ? tokenized[tokenized.length - 1].name.split(' ').slice(-1)[0] : null
-      const newItem = { name: correctRecognitionErrors(word), collected: false }
+      const newItem: ShoppingItem = { name: correctRecognitionErrors(word), collected: false }
       if (isQuantityWord(prevWord) || isAdjectiveWord(prevWord)) {
         newItem.name = prependQuantityFromPrevious(newItem, tokenized)
       }
@@ -92,27 +94,29 @@ export const tokenizeWords = words => {
   }, [])
 }
 
-export const prependQuantityFromPrevious = (newItem, recognizedItems) => {
-  const prev = recognizedItems.pop()
+export const prependQuantityFromPrevious = (newItem: ShoppingItem, recognizedItems: ShoppingItem[]): string => {
+  const prev = recognizedItems.pop()!
   return `${mapToUnits(prev.name)} ${newItem.name}`
 }
 
-export const alreadyRecognized = (word, recognizedItems) =>
+export const alreadyRecognized = (word: string, recognizedItems: ShoppingItem[]): ShoppingItem | undefined =>
   recognizedItems.find(item => item.name === word)
 
-export const mapToUnits = word =>
+export const mapToUnits = (word: string): number | string =>
   numbers[word] ||
   units[word] ||
   word
 
-export const isQuantityWord = word =>
-  Number.isInteger(Number.parseInt(word, 10)) ||
-  units.hasOwnProperty(word) ||
-  numbers.hasOwnProperty(word) ||
-  descriptive.includes(word)
+export const isQuantityWord = (word: string | null): boolean =>
+  word !== null && (
+    Number.isInteger(Number.parseInt(word, 10)) ||
+    Object.prototype.hasOwnProperty.call(units, word) ||
+    Object.prototype.hasOwnProperty.call(numbers, word) ||
+    descriptive.includes(word)
+  )
 
-export const isAdjectiveWord = word =>
-  word && word.endsWith('inen')
+export const isAdjectiveWord = (word: string | null): boolean =>
+  word !== null && word.endsWith('inen')
 
-export const correctRecognitionErrors = word =>
-  word && (knownUnrecognizedWords[word] || word)
+export const correctRecognitionErrors = (word: string): string =>
+  knownUnrecognizedWords[word] || word
