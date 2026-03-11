@@ -1,16 +1,17 @@
 {
   "compilerOptions": {
-    "lib": [
-      "es2017"
-    ],
+    "target": "ES2022",
+    "module": "commonjs",
+    "lib": ["ES2022"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "sourceMap": true,
-    "target": "es2017",
-    "outDir": "lib"
+    "outDir": "lib",
+    "resolveJsonModule": true
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }

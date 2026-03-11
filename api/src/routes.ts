@@ -1,4 +1,4 @@
-import * as express from 'express'
+import express from 'express'
 import * as scraper from './scraper'
 import * as db from './database'
 import { initBasicAuth } from './auth'
@@ -6,7 +6,7 @@ const requireAuth = initBasicAuth()
 const api = express.Router()
 
 api.get('/recipe', async (req: express.Request, res: express.Response) => {
-  const url: String = req.query.url
+  const url = req.query.url as string | undefined
   if (!url) {
     res.status(400).json({ error: 'Missing Query parameter "url"' })
   } else {
@@ -26,7 +26,7 @@ api.get('/recipe', async (req: express.Request, res: express.Response) => {
 })
 
 api.get('/list/:id', async (req: express.Request, res: express.Response) => {
-  const listId: String = req.params.id
+  const listId = req.params.id
   try {
     let shoppingList = await db.findList(listId)
     if (shoppingList.length === 0) {
@@ -40,7 +40,7 @@ api.get('/list/:id', async (req: express.Request, res: express.Response) => {
 })
 
 api.post('/list/:id', async (req: express.Request, res: express.Response) => {
-  const listId: String = req.params.id
+  const listId = req.params.id
   try {
     const listItems = JSON.parse(req.body)
     db.saveList(listId, listItems)
