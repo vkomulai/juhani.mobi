@@ -1,4 +1,4 @@
-import { defineConfig, transformWithEsbuild } from 'vite'
+import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import path from 'path'
@@ -38,17 +38,6 @@ function nodepathPlugin() {
 export default defineConfig({
   plugins: [
     nodepathPlugin(),
-    {
-      name: 'treat-js-files-as-jsx',
-      enforce: 'pre',
-      async transform(code, id) {
-        if (!id.match(/src\/.*\.js$/)) return null
-        return transformWithEsbuild(code, id, {
-          loader: 'jsx',
-          jsx: 'automatic'
-        })
-      }
-    },
     react(),
     VitePWA({
       registerType: 'prompt',
@@ -86,13 +75,6 @@ export default defineConfig({
   define: {
     'process.env.PUBLIC_URL': JSON.stringify(''),
     'process.env.REACT_APP_SIMULATE_ANALYTICS_PRODUCTION': JSON.stringify(process.env.REACT_APP_SIMULATE_ANALYTICS_PRODUCTION || '')
-  },
-  optimizeDeps: {
-    esbuildOptions: {
-      loader: {
-        '.js': 'jsx'
-      }
-    }
   },
   server: {
     port: 3000,

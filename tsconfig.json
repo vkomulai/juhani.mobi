@@ -18,7 +18,8 @@
       "dom.iterable",
       "esnext"
     ],
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "types": ["vitest/globals"]
   },
   "include": [
     "src"

@@ -28,7 +28,7 @@ describe('getItemOrder', () => {
 
 describe('getItemsWithUnknownOrder', () => {
   it('returns only unknown items', () => {
-    const items = [{ name: 'banaani' }, { name: 'kampiakseli' }, { name: 'kampiakseli' }, { name: 'tunkki' }, { name: 'maito' }]
+    const items = [{ name: 'banaani', collected: false }, { name: 'kampiakseli', collected: false }, { name: 'kampiakseli', collected: false }, { name: 'tunkki', collected: false }, { name: 'maito', collected: false }]
     expect(getItemsWithUnknownOrder(items)).toEqual(['kampiakseli', 'tunkki'])
   })
 })
