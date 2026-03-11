@@ -1,4 +1,3 @@
-import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useStore } from 'store'
 import { getLocaleLang } from 'i18n'

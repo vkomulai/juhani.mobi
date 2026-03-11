@@ -1,4 +1,3 @@
-import React from 'react'
 import { v1 as uuidv1 } from 'uuid'
 import { useStore } from 'store'
 import { shareList } from 'api/Share'

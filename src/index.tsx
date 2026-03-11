@@ -1,4 +1,4 @@
-import React from 'react'
+import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import {
   BrowserRouter as Router,
@@ -20,14 +20,14 @@ initializeAnalytics()
 sendApplicationLoadedEvent()
 
 createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+  <StrictMode>
     <Router>
       <Routes>
         <Route path='/l/:id' element={<App />} />
         <Route path='/' element={<App />} />
       </Routes>
     </Router>
-  </React.StrictMode>
+  </StrictMode>
 )
 
 register()

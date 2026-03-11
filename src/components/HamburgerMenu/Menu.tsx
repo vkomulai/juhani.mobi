@@ -1,4 +1,3 @@
-import React from 'react'
 import i18n from 'i18n'
 import { slide as BurgerMenu } from 'react-burger-menu'
 import { useTranslation } from 'react-i18next'

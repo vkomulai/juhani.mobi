@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 import './index.css'
 
 export { AddButton, EmptyButton } from './Button/Button'
