@@ -6,7 +6,7 @@ import {
   Routes
 } from 'react-router-dom'
 
-import { register } from 'registerServiceWorker.js'
+import { register } from 'registerServiceWorker'
 import { App } from 'App'
 import {
   initializeAnalytics,

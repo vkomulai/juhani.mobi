@@ -1,11 +1,11 @@
 import React from 'react'
 import './index.css'
 
-export { AddButton, EmptyButton } from './Button/Button.jsx'
-export { InfoView } from './InfoView/InfoView.jsx'
-export { SortableList } from './SortableList/SortableList.jsx'
-export { Menu } from './HamburgerMenu/Menu.jsx'
-export { Header } from './Header/Header.jsx'
+export { AddButton, EmptyButton } from './Button/Button'
+export { InfoView } from './InfoView/InfoView'
+export { SortableList } from './SortableList/SortableList'
+export { Menu } from './HamburgerMenu/Menu'
+export { Header } from './Header/Header'
 
 
 export const ListArea = ({ children }) => <div className='mui-container-fluid list-area'>{children}</div> //  eslint-disable-line
