@@ -2,6 +2,9 @@
 .vscode
 .DS_Store
 
+# Migration log file
+docs/migration-log.md
+
 # Code coverage
 coverage/
 
@@ -14,3 +17,8 @@ npm-debug.log
 # Build dirs
 node_modules/
 build/
+
+# Playwright
+playwright-report/
+test-results/
+blob-report/

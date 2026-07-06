@@ -1,0 +1,84 @@
+# Phase 5: Redux → Zustand — Implementation Log
+
+## Packages
+
+### Added
+- `zustand` ^5.0.11
+
+### Removed
+- `redux` 4.0.4
+- `react-redux` 7.1.3
+- `redux-thunk` ^2.3.0
+- `redux-storage` ^4.1.2
+- `redux-storage-engine-localstorage` ^1.1.4
+- `lodash` (transitive, no longer needed)
+
+## New Files
+
+| File | Description |
+|---|---|
+| `src/store.js` | Zustand store with all state + actions, `persist` middleware (localStorage key `'juhani.mobi'`), window event listeners, share target listener |
+| `src/components/Header/Header.jsx` | Header component (moved from container, uses `useStore()`) |
+| `src/components/Header/Header.css` | Copied from containers/Header/ |
+| `src/components/Header/shareIcon.png` | Copied from containers/Header/ |
+| `src/store.test.js` | 14 new Zustand store unit tests |
+
+## Deleted Directories
+
+- `src/reducers/` — reducer logic moved to store.js
+- `src/actions/` — action creators became Zustand actions in store.js
+- `src/containers/` — all 6 containers dissolved into components:
+  - `AddButton.js` → merged into `Button.jsx` as `AddButton` export
+  - `EmptyButton.js` → merged into `Button.jsx` as `EmptyButton` export
+  - `InfoArea.js` → merged into `InfoView.jsx`
+  - `ShoppingList.js` → merged into `SortableList.jsx`
+  - `ApplicationMenu.js` → merged into `Menu.jsx`
+  - `Header/Header.js` → moved to `components/Header/Header.jsx`
+
+## Modified Files
+
+| File | Change |
+|---|---|
+| `src/components/Button/Button.jsx` | Now exports `AddButton` and `EmptyButton` with analytics + speech side effects via `useStore()` |
+| `src/components/InfoView/InfoView.jsx` | Reads state via `useStore()` directly, no longer accepts props |
+| `src/components/SortableList/SortableList.jsx` | Reads state + dispatches via `useStore()`, converted class component to function with `useEffect` |
+| `src/components/HamburgerMenu/Menu.jsx` | Reads sort state via `useStore()`, no longer accepts props |
+| `src/components/index.js` | Updated exports: added `AddButton`, `EmptyButton`, `Header`; removed `Button` default export |
+| `src/App.js` | Imports components directly instead of containers |
+| `src/index.js` | Removed Redux Provider/store setup/redux-storage loader; calls `setupWindowListeners()` and `setupShareTargetListener()` from store |
+| `src/api/MarketCategories.js` | Replaced `_.get` with optional chaining (`match[0]?.item?.order ?? UNKNOWN_ITEM_ORDER`), `_.uniq` with `[...new Set()]` |
+| `e2e/persistence.spec.ts` | Updated to expect Zustand persist format (`parsed.state.shoppingItems` instead of `parsed.shoppingItems`) |
+| `package.json` | Added zustand, removed redux/react-redux/redux-thunk/redux-storage/redux-storage-engine-localstorage |
+| `package-lock.json` | Regenerated |
+
+## Key Decisions
+
+- **Store format:** Zustand `persist` middleware wraps state in `{"state":{...},"version":0}`. The `merge` option handles migration from old redux-storage flat format.
+- **Partialize:** Only `shoppingItems`, `onBoardingCompleted`, and `sortAutomatically` are persisted (same as what redux-storage effectively saved). Transient state like `listening`, `isOnline`, `isSpeechRecognitionSupported` is not persisted.
+- **DEFAULT_ITEMS:** Preserved the localhost-only default items (banaani, appelsiini, kiwi, kahvi) in store.js.
+- **Side effects:** Analytics calls (sendAddButtonPressedEvent, sendItemsRecognizedEvent, etc.) preserved in component event handlers, matching the original container behavior.
+- **SortableList:** Converted from class component (`SortableListInner` + wrapper) to a single function component using `useEffect` for `fetchList` on mount.
+
+## Test Results
+
+### Unit tests: 29/29 passed (was 25)
+
+```
+Test Suites: 4 passed, 4 total
+Tests:       29 passed, 29 total
+```
+
+New test suite `store.test.js` adds 14 tests covering:
+- Shopping items: add, remove, reorder, collect, clear, sort
+- Listening state toggle
+- Sort automatically toggle
+- Online state
+
+### E2E tests: 41/41 passed
+
+```
+Running 41 tests using 1 worker
+41 passed (1.2m)
+```
+
+One E2E test (`persistence.spec.ts:42`) was updated to match the new Zustand persist format.

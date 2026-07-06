@@ -1,0 +1,35 @@
+CodeRabbit Review — Phase 6 (react-sortable-hoc → @dnd-kit)
+=============================================================
+Base: bc0c0e050a8ce7779fef28a45e9cc0b397ac0f74
+Branch: react-version-migration
+
+## Critical / Bugs (Phase 6)
+
+1. SortableList.jsx:77-85 — Potential crash when `over` is null
+   When a drag is cancelled or dropped outside the sortable area, `over` can be null.
+   The check `active.id !== over?.id` evaluates to true when over is null, causing
+   a crash on `over.id` access in findIndex.
+   STATUS: FIXED — Changed to `if (over && active.id !== over.id)`
+
+## Pre-existing Suggestions (not from Phase 6)
+
+2. store.js:67-87 — Variable `lastCollectedIndex` is misleading
+   Uses findIndex which finds the first match, not the last.
+
+3. store.js:105-120 — fetchList doesn't validate API response before setting state
+   Raw response is set to shoppingItems without checking shape or status.
+
+4. store.js:168-191 — DOMContentLoaded listener may miss if called after DOM loaded
+   setupShareTargetListener registers DOMContentLoaded but it may have already fired.
+
+5. Button.jsx:50-56 / InfoView.jsx:11-15 — No defensive checks for shoppingItems
+   Could crash if shoppingItems is null/undefined. Low risk since store always
+   initializes it as an array.
+
+6. Header.jsx:22 — Clickable img not keyboard-accessible
+   The share icon img with onClick is not focusable or operable via keyboard.
+
+7. Button.jsx:26-35 — No error handling for speech recognition
+   startListening could fail due to permission denial or unsupported browser.
+
+8. package.json:21 — uuid v3.3.3 is severely outdated (latest is v13)

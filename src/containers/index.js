@@ -1,6 +1,0 @@
-export { AddButton } from './AddButton.js'
-export { EmptyButton } from './EmptyButton.js'
-export { InfoArea } from './InfoArea.js'
-export { ShoppingList } from './ShoppingList.js'
-export { ApplicationMenu } from './ApplicationMenu.js'
-export { Header } from './Header/Header'

@@ -1,0 +1,63 @@
+Phase 7: Monitoring & Analytics Upgrade
+=======================================
+
+## Packages
+
+### Added
+- `@sentry/react` — modern Sentry SDK for React (replaces raven-js)
+
+### Removed
+- `raven-js` ^3.22.2 — deprecated Sentry SDK
+- `react-ga` ^2.4.1 — Universal Analytics wrapper (UA is sunset)
+
+## Modified Files
+
+| File | Change |
+|---|---|
+| `src/api/Analytics.js` | Replaced raven-js with @sentry/react, replaced ReactGA with window.gtag, fixed isProduction() call bug, fixed process.envs typo, removed Hotjar config, consolidated Sentry DSN into single string |
+| `index.html` | Added GA4 gtag.js script snippet with placeholder measurement ID (G-XXXXXXXXXX) |
+| `vite.config.js` | Replaced `process.envs` → `undefined` define with `process.env.REACT_APP_SIMULATE_ANALYTICS_PRODUCTION` define (forwards env var from build environment) |
+| `package.json` | Added @sentry/react, removed raven-js and react-ga |
+| `package-lock.json` | Regenerated |
+
+## Bug Fixes
+
+### Bug 1: `isProduction` not called (line 44)
+- **Before:** `if (isProduction || ...)` — function reference, always truthy
+- **After:** `if (isProduction() || ...)` — function call, checks hostname
+
+### Bug 2: `process.envs` typo (line 44)
+- **Before:** `process.envs.REACT_APP_SIMULATE_ANALYTICS_PRODUCTION` — always undefined
+- **After:** `process.env.REACT_APP_SIMULATE_ANALYTICS_PRODUCTION` — correctly reads env var
+
+## Key Decisions
+
+- **Kept file as `.js`:** The rest of the codebase uses `.js`/`.jsx` and the ESLint config targets those. TypeScript migration would be a separate effort.
+- **Used `process.env` not `import.meta.env`:** The project keeps `process.env` in source for Jest/react-scripts compatibility. `import.meta.env` causes SyntaxError in the old Jest version.
+- **Used `window.gtag` not bare `gtag`:** Explicit global reference avoids ESLint no-undef warnings and makes the dependency on the script tag clear.
+- **GA4 measurement ID placeholder:** Used `G-XXXXXXXXXX` — needs to be replaced with actual GA4 measurement ID from Google Analytics console.
+- **Sentry DSN as single string:** Consolidated the old `account`/`project` split config into a single DSN string, matching modern @sentry/react conventions.
+- **Removed Hotjar config:** The config included Hotjar IDs that were never used in code.
+- **Removed ReactGA.initialize:** GA4 initialization happens via the gtag.js script tag in index.html, no JS-side init needed.
+
+## Test Results
+
+### Unit tests: 29/29 passed
+
+```
+PASS src/api/SpeechRecognitionAPI.test.js
+PASS src/api/MarketCategories.test.js
+PASS src/store.test.js
+PASS src/App.test.js
+Test Suites: 4 passed, 4 total
+Tests:       29 passed, 29 total
+```
+
+### E2E tests: 41/41 passed
+
+```
+41 passed (1.0m)
+```
+
+### ESLint: passed
+### CSSlint: not affected (no CSS changes)

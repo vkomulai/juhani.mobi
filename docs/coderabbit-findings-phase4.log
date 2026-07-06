@@ -1,0 +1,37 @@
+CodeRabbit Review Findings — Phase 4: i18n Modernization
+=========================================================
+Review base: 9145107c82a11a57916caf8545cfe959 (Phase 3 commit)
+Date: 2026-02-09
+
+All findings are PRE-EXISTING issues, none introduced by Phase 4.
+
+---
+
+1. Typo in translation key: sortAutomatially
+   File: src/components/HamburgerMenu/Menu.jsx:27
+   Type: potential_issue
+   Status: Pre-existing
+
+   The key 'settings.sortAutomatially' is missing the letter 'c' (should be
+   'sortAutomatically'). Both the source code and translations.json use the
+   misspelled key consistently, so it works correctly. Fixing requires updating
+   the key in both Menu.jsx and translations.json simultaneously.
+
+2. Clickable divs lack keyboard accessibility
+   File: src/components/HamburgerMenu/Menu.jsx:22-37
+   Type: potential_issue (accessibility)
+   Status: Pre-existing
+
+   Menu items use onClick on <div> elements without keyboard support (role,
+   tabIndex, onKeyDown). Should use <button> elements or add role="button",
+   tabIndex={0}, and onKeyDown handlers for Enter/Space.
+
+3. React Router v7 future flags warnings
+   File: docs/react-migration-tasks/03-implementation-log.md:71-74
+   Type: potential_issue
+   Status: Pre-existing (from Phase 3)
+
+   Warnings about v7_startTransition and v7_relativeSplatPath indicate the
+   router config doesn't enable future flags for v7 compatibility. Should add
+   future={{ v7_startTransition: true, v7_relativeSplatPath: true }} to
+   BrowserRouter props when ready.

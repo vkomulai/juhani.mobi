@@ -1,30 +1,27 @@
 import React from 'react'
 import {
   ListArea,
-  Buttons
-} from 'components'
-import {
+  Buttons,
   EmptyButton,
   AddButton,
-  ShoppingList,
-  InfoArea,
+  SortableList,
+  InfoView,
   Header,
-  ApplicationMenu
-} from 'containers'
-import i18n from 'i18n' //  eslint-disable-line
-import { withNamespaces } from 'react-i18next'
+  Menu
+} from 'components'
+import 'i18n'
 
-export const App = withNamespaces()(() => (
+export const App = () => (
   <>
-    <ApplicationMenu />
+    <Menu />
     <Header />
-    <InfoArea />
+    <InfoView />
     <ListArea>
       <Buttons>
         <EmptyButton />
         <AddButton />
       </Buttons>
-      <ShoppingList />
+      <SortableList />
     </ListArea>
   </>
-))
+)

@@ -6,6 +6,7 @@ ul {
 
 li {
   list-style: none;
+  touch-action: none;
 }
 
 input[type="checkbox"] {

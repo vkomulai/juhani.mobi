@@ -1,0 +1,43 @@
+CodeRabbit Review — Phase 5+6 commit (36377a9)
+================================================
+
+## Potential Issues (10 findings)
+
+### Accessibility
+1. Header share icon not keyboard accessible (Header.jsx:22)
+   — The <img onClick> should be wrapped in a <button> for keyboard/screen-reader users.
+
+### Defensive coding (pre-existing patterns)
+2. No response.ok check in fetchList (store.js:105-120)
+   — Non-2xx responses could corrupt shoppingItems.
+3. No response.ok check in storeList (store.js:122-135)
+   — Same issue for POST.
+4. shoppingItems could be undefined (Button.jsx:50-55, SortableList.jsx:92-101)
+   — During hydration, .length / .map() could throw. Suggests optional chaining or || [] fallback.
+
+### Error handling (pre-existing patterns)
+5. No error handling for shareList (Header.jsx:13-17)
+   — Async API call with no catch.
+6. No error handling for startListening (Button.jsx:26-35)
+   — Speech recognition failure gives no feedback.
+
+### Data uniqueness
+7. item.name used as sortable ID (SortableList.jsx:27-30)
+   — Duplicate names would break dnd-kit and React keys.
+8. findIndex by name in drag handler (SortableList.jsx:83-85)
+   — Same uniqueness concern.
+
+### Test quality
+9. Shared test fixture by reference (store.test.js:3-7)
+   — Could cause test pollution if store mutates objects. Suggests factory function.
+
+### Response validation
+10. storeList POST has no response validation (store.js:122-135)
+    — No response.ok check, successful saves go unacknowledged.
+
+---
+Notes:
+- Most findings are pre-existing patterns carried over from the old Redux code.
+- The shoppingItems undefined guard is unnecessary since Zustand initializes it
+  as an array and persist uses a merge function, but || [] is low-cost insurance.
+- The accessibility finding and test fixture suggestion are actionable improvements.

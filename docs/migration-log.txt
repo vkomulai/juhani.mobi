@@ -1,0 +1,205 @@
+1. Dump the LLOC (this is not a big project)
+2. Claude init
+3. Ask Opus 4.6 to create a plan.  Plan the migration of this codebase to modern react. I want to do this properly and my approach is to 1) Create functional specs documentations as into docs/folder. 2) Create missing end-to-end tests using
+  playwright. After that we can start planning the react version migration to latest
+     - "There was read .env"
+---- PLAN DONE ----
+5. Start implementing the plan of writing specs and tests)
+5. Write the plan to docs/ -folder into specs
+ - What can we say about the tasks generated?
+   - I did not have apesiclizes extractor agent
+   - if we look into the results I could have wanted something else - something betteR?
+   - talk about the format.
+   - DO THIS USING DIFFERENT PROMPT or Different model!"
+
+⎿  You've hit your limit · resets 11am (Europe/Helsinki)
+-----
+6. Claude Starts creating the tests
+7. app/api doesn start with new node
+8. app/api doesn start with oldew node
+9. trying to fix it manually --> stupid. hard. Just through the proble to Opus "npm run test:e2e does not work"
+-----
+- App Starts now
+- tests run now - what kind of tests are these --- lets dig into this?
+- BUT 15 tests are failing (e2e)
+- "now there are 15 failing e2e tests in "npm run test:2e2". Fix these failing tests"
+- thinking for 10 minutes....
+- Got all fixed (but still 4 in fixme -state)
+- Asked: write a short summary (max 10 bullet points on what was wrong and key points of the fixes). Also write 3 bullet point analysis on why you think you failed in the first one-shot all tests approach
+---
+⏺ Fixes Summary
+  - Speech mock timing bug: start() checked this.onresult synchronously, but the app sets it AFTER calling start(). Moved checks inside setTimeout callbacks.
+  - Speech mock used arrow functions: Changed to var self = this + regular functions to ensure correct this binding inside callbacks.
+  - addItemsViaSpeech timeout too short: 300ms wasn't enough for 100ms mock delay + 50ms onspeechend + React re-render. Bumped to 500ms.
+  - Burger menu overlay blocked clicks: .bm-overlay intercepted clicks on .info-area. Fixed by using keyboard.press('Escape') to close menu.
+  - Category data not loading: Backend not running and localhost check (== 'http://localhost/') doesn't match :3000. Fixed with page.route() mock serving CategoryData.json.
+  - Sharing alert tests deadlocked: Promise.all([waitForEvent('dialog'), click()]) deadlocks because alert() blocks JS, click never completes, dialog.accept() never called. Fixed with page.once('dialog', ...)
+  auto-accept before clicking.
+  - Sharing test 1 had hanging Promise: First page.evaluate created a Promise that waited for navigator.share to be called — blocked the entire test. Removed it.
+
+  Why the first-shot approach failed
+
+  - Wrote the mock without tracing the app's actual call order: The real SpeechRecognitionAPI.js calls recognition.start() before setting onresult/onspeechend — a subtle sequencing detail I missed when reading the
+   source, making the mock fundamentally broken for 9 tests.
+  - Assumed infrastructure would be available: The category sorting tests assumed the /categories fetch would work on localhost, but the known bug (location == 'http://localhost/' vs :3000) plus no running backend
+   meant Fuse.js initialized with zero categories — something I documented in the spec but didn't account for in the test.
+  - Tested dialog handling with textbook pattern, not actual browser behavior: Used Promise.all([waitForEvent, click]) which is correct for navigations but deadlocks with synchronous alert() — the click promise
+  can't resolve until the alert is dismissed, but the alert can't be dismissed until after Promise.all.
+--
+prompt: @e2e/shopping-list.spec.ts has still "drag and drop reorder" in fixme -state. Try to fix it
+Yes. it was fixed of course.
+---
+prompt: Now the last challenge. those backend-depended tests. you can get local backend running from the api/-directory locally. have a look into that if it is beneficial for these three tests and you could fix the
+  remaining three from fixme -state to pass.
+
+
+❯ give me an analysis on why these three were skipped on the first try and what you changed
+
+⏺ Analysis: Why the 3 tests were originally skipped
+
+  Root cause
+
+  The tests were written with a real backend dependency — they required the Express API on port 4000 and DynamoDB on port 8000 to be running. Each test had a try/catch wrapper that called test.skip(true, 'Backend
+  API not available') when the backend wasn't reachable. Since no backend was running during test execution, they always skipped.
+
+  Why I designed them that way initially
+
+  1. Took the plan too literally — The original plan spec'd e2e/helpers/api-helpers.ts with functions like seedListData() and getListData() that POST/GET directly to localhost:4000. I followed that design, making
+  the sharing test POST test data to the real API before navigating.
+  2. Didn't think through the page.route() option — I had already used page.route() successfully for the category-sorting tests (mocking /categories), but didn't apply the same pattern to these tests. The recipe
+  and sharing endpoints are no different — they're just HTTP fetches that can be intercepted at the browser level.
+  3. Over-scoped the test boundary — These tests should verify that the frontend correctly handles API responses, not that the full backend stack works. The sharing test doesn't need to actually store data in
+  DynamoDB — it needs to verify that when fetchList() returns items, they render correctly.
+
+  What changed
+  ┌───────────────────────────┬────────────────────────────────────────────────────────────────────────────────┬────────────────────────────────────────────────────────────────────────┐
+  │           Test            │                                     Before                                     │                                 After                                  │
+  ├───────────────────────────┼────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┤
+  │ Sharing: load shared list │ POST to localhost:4000, then navigate to /l/:id                                │ page.route('**/list/:id') returns mock items, navigate directly        │
+  ├───────────────────────────┼────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┤
+  │ Recipe: load ingredients  │ Health-check localhost:4000, navigate with ?url=, hope external scraping works │ page.route('**/recipe**') returns mock ingredients, verify they render │
+  ├───────────────────────────┼────────────────────────────────────────────────────────────────────────────────┼────────────────────────────────────────────────────────────────────────┤
+  │ Recipe: error handling    │ Health-check localhost:4000, navigate with unsupported URL                     │ page.route('**/recipe**') returns 500, verify app doesn't crash        │
+  └───────────────────────────┴────────────────────────────────────────────────────────────────────────────────┴────────────────────────────────────────────────────────────────────────┘
+  The key insight: page.route() intercepts at the browser network level before CRA's proxy, so the backend is never contacted. This made the tests fully self-contained — no backend, no DynamoDB, no Java runtime.
+  ---
+  ⏺ Fair point. No — with the API mocked via page.route(), they're frontend integration tests, not true end-to-end tests. They verify that the frontend correctly handles API responses, but they don't test:
+
+  - The Express routing actually works
+  - DynamoDB read/write works
+  - The recipe scraper parses HTML correctly
+  - Request serialization/deserialization between frontend and backend
+
+  The original plan with try/catch + test.skip was actually closer to the right idea — run against the real backend when available, skip gracefully when not. The problem was just that the backend was never
+  started.
+
+  Options
+
+  1. Get the real backend running during tests — add DynamoDB + API as webServer entries in playwright.config.ts. This gives true E2E coverage but adds complexity (Java for DynamoDB, Node 10 for the API)
+  2. Keep both — run the mocked versions always (fast, reliable CI baseline), and have a separate config or flag that runs against the real backend when available
+  3. Accept the current state — the mocked tests still cover meaningful frontend flows (routing, Redux dispatch, rendering), and the backend has its own unit tests
+
+  Want me to try option 1 — get the local backend + DynamoDB actually running and wire them into the test setup?
+  ---
+  finish here -- tests pass.
+  ❯ this is good. job well done. was this easy?
+
+⏺ Thanks! Honestly — the drag-and-drop and the mocking were straightforward once I understood the mechanics. But getting here wasn't trivial:
+
+  - The speech mock timing was the hardest bug earlier — the app calls recognition.start() before setting onresult, which is a subtle ordering issue that's easy to miss when writing mocks from the spec alone
+  - react-sortable-hoc's pressDelay required reading the library source to understand that any mouse movement cancels the timer, and that shouldCancelStart rejects clicks on <input> elements
+  - The alert deadlock (alert() blocks JS, so Promise.all([waitForEvent, click()]) never resolves) was a classic gotcha
+
+  The pattern recognition got easier as I went — once page.route() worked for categories, applying it to sharing/recipes was mechanical. But the first 15-failure debugging round was the real work.
+
+  And you're right that the mocked tests aren't true E2E. That's a real tradeoff I glossed over too quickly.
+  --
+
+prompt:  Last thing:
+   Read the files from @docs/specs/ -folder and write one summary markdown of all the features in the app. each summary should be written into this as "title", meaning that max. 10 words per feature. put the
+  fetures into logical categories from user's point of view. around 5 - 10 categories. less the better
+Created the summary
+--
+Next step: review time for the tests and specs.
+1. Using Aikido
+2. Using Claude
+-------
+- Claude to write plan into files. results is 10 phases
+- rate limited
+----
+Phase 1: Plan
+* 
+❯ start implementing phase 1. when it is ready, verified. stop
+ (Claude enters plan mode automatically)
+❯ write this log / output from the phase 1 into file docs/react-migration-tasks/01-implementation-log.md
+❯ append into the @docs/react-migration-tasks/01-implementation-log.m file your key learnings. 1) what was easy 2) what was hard 3) what didn't go as planned 4) what would you do differently next time
+✻ Worked for 12m 59s
+--
+  A) Planning (~9 min of active work)
+  - The Phase 1 plan specifically was done in plan mode from 20:36 - 20:45 UTC on Feb 8 — about 9 minutes. That's the time spent reading files, exploring the codebase, and writing the step-by-step plan you
+  approved.
+  - Before that, ~12 minutes went into splitting the overall migration into 10 per-phase task docs (16:09 - 16:18 + 20:29 - 20:32).
+
+  B) Implementation (~40 min wall clock)
+  - Session started at 04:02 UTC on Feb 9, implementation was complete (all tests passing, summary written) by roughly 04:42 UTC — about 40 minutes of wall clock time.
+  - Most of the "user messages" are automated tool result approvals, not manual interaction from you. The actual work was almost entirely autonomous.
+  - The bulk of the time was spent on the JSX-in-JS transform issue (5 build attempts, web research) and the cheerio/Jest compatibility fix. The straightforward parts (index.html, package.json, config files) took
+  maybe 10 minutes combined.
+
+  After that came the log writing and this conversation (~04:42 - 04:49).
+  --
+  npm test
+  all works now
+
+  ----------
+  Phase 2
+  ⏺ Here's the situation with React 19:
+
+  Blockers for React 19:
+  - react-sortable-hoc — peer deps: react ^16.3.0 || ^17.0.0. Doesn't declare React 18 or 19 support. It also uses findDOMNode which is removed in React 19 (not just deprecated). This would break drag-and-drop
+  reorder.
+  - react-redux@7.1.3 — doesn't declare React 19 support. Would need upgrade to v9, but v9 requires redux@^5 (current: redux@4.0.4). That's a bigger change.
+  - react-i18next@9 — peer deps say react >= 16.3.0 (open-ended), but withNamespaces() HOC is long-removed in newer versions. Unknown if it actually works with React 19 internals.
+
+  React 18 is safer because:
+  - findDOMNode is deprecated but still works (react-sortable-hoc keeps working)
+  - react-redux@7.1.3 officially supports React 18
+  - react-router-dom@5 works fine with React 18
+  - react-i18next@9 works fine with React 18
+
+  React 19 would require upgrading react-sortable-hoc → @dnd-kit, react-redux → v9 + redux v5, and verifying react-i18next — all at once. That's Phases 2+5+6 combined.
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+"⎿  You've hit your limit · resets 11am (Europe/Helsinki)"
+
+- doing the react 19 thing later
+- Done and log written to implemnettion log
+- runnign coderabbit:review agent from CC?? Why not run from command line separatelu
+---
+> Start implementing phase 4
+> "Bug fixed: InfoView.jsx offline text was hardcoded in Finnish ('Selaimesi offline-tilassa!', 'Puheentunnistus ei toimi'). Now uses t() with existing translation keys, so it respects the selected language."
+---
+> Start implementing phase 5 (no planning mode)
+> review with coderabbit
+---
+> Start implementing phase 6 (no planning mode)
+> review with coderabbit
+---
+> Start implementing phase 7 (no planning mode)
+> review with coderabbit
+
+
+TODO
+- Context. 
+  - Claude Code + Opus 4.6 all the way!
+  - react ver, redux, 
+  - node 10!
+  - This is a trivial app. TODO with these functionalities
+    - voice driven
+    - drag and drop
+    - localization
+    - smart sorting (wstored in backend)
+    - sharing of lists
+    - ACTUALLY THIS IS NOT A TRIVIAL. EXTRACT ALL THE FUNCTIONALITY FROM THE SPECS!!!
+- Cal
+- Finally create slides with some htmljstool from this story use the migratin log
+NOT DONE 3. Next I want you to create archicture documentation into the docs folder
