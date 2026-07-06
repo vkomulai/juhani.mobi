@@ -1,10 +1,14 @@
-import React from 'react'
 import classNames from 'classnames'
 import { useTranslation } from 'react-i18next'
 import { useStore } from 'store'
 import robotWaiting from './robot-waiting.png'
 import robotListening from './robot-listening.png'
 import './InfoView.css'
+
+interface InfoText {
+  mainText: string
+  subText: string
+}
 
 export const InfoView = () => {
   const { t } = useTranslation()
@@ -41,7 +45,7 @@ export const InfoView = () => {
   )
 }
 
-const getInfoText = (listening, emptyShoppingList, isSpeechRecognitionSupported, isOnline, t) => {
+const getInfoText = (listening: boolean, emptyShoppingList: boolean, isSpeechRecognitionSupported: boolean, isOnline: boolean, t: (key: string) => string): InfoText => {
   if (!isOnline) {
     return {
       mainText: t('infoView.mainText.offline'),
@@ -62,7 +66,7 @@ const getInfoText = (listening, emptyShoppingList, isSpeechRecognitionSupported,
       mainText: t('infoView.mainText.congratsItWorked'),
       subText: t('infoView.subText.letsAddSomething')
     }
-  } else if (listening) {
+  } else {
     return {
       mainText: t('infoView.mainText.iamListening'),
       subText: t('infoView.subText.tellMeWhatToAdd')

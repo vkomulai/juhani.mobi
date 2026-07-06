@@ -1,4 +1,6 @@
-export const shareList = (listId, shoppingItems) => {
+import { ShoppingItem } from 'types'
+
+export const shareList = (listId: string, shoppingItems: ShoppingItem[]): void => {
   if (!navigator.share) {
     alert('Jako mahdollista vain selaimella: Chrome 61 Android!!')
     return
@@ -16,6 +18,6 @@ export const shareList = (listId, shoppingItems) => {
     text: formattedShoppingList + '\n',
     url: `https://www.juhani.mobi/l/${listId}`
   })
-    .then(() => console.log('Successful share'))  //  eslint-disable-line no-console
-    .catch((error) => console.log('Error sharing', error))   //  eslint-disable-line no-console
+    .then(() => console.log('Successful share'))
+    .catch((error) => console.log('Error sharing', error))
 }

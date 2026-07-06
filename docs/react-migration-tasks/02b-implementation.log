@@ -1,0 +1,79 @@
+# Phase 2b: React 18 → 19 — Implementation Log
+
+## Prerequisites
+
+Phases 5 (Zustand replaces Redux) and 6 (@dnd-kit replaces react-sortable-hoc) completed,
+removing the two blockers for React 19: `react-redux@7` and `findDOMNode` usage.
+
+## Step 1: Upgrade react + react-dom
+
+- `react` ^18.3.1 → ^19
+- `react-dom` ^18.3.1 → ^19
+
+Used `--force` due to transitive peer dep warnings (all compatible at runtime).
+
+## Step 2: Upgrade @testing-library/react
+
+- `@testing-library/react` ^14.3.1 → ^16 (v16.1.0+ supports React 19)
+- Added `@testing-library/dom` ^10.4.1 as explicit devDependency (RTL v16 moved it to a peer dep)
+
+## Step 3: Remove unused `import React from 'react'`
+
+With the automatic JSX runtime (available since React 17, configured via `@vitejs/plugin-react`),
+the default React import is unnecessary. Removed from 8 files:
+
+| File | Change |
+|---|---|
+| `src/index.tsx` | `import React` → `import { StrictMode }` |
+| `src/App.tsx` | Removed `import React` |
+| `src/App.test.tsx` | Removed `import React` |
+| `src/components/index.tsx` | `import React, { ReactNode }` → `import { ReactNode }` |
+| `src/components/SortableList/SortableList.tsx` | `import React, { useEffect }` → `import { useEffect }` |
+| `src/components/Header/Header.tsx` | Removed `import React` |
+| `src/components/HamburgerMenu/Menu.tsx` | Removed `import React` |
+| `src/components/Button/Button.tsx` | Removed `import React` |
+| `src/components/InfoView/InfoView.tsx` | Removed `import React` |
+
+Also updated `<React.StrictMode>` → `<StrictMode>` in index.tsx (using named import).
+
+## No other code changes needed
+
+- `react-i18next@^16.5.4` — compatible with React 19
+- `@dnd-kit/core@^6.3.1` + `@dnd-kit/sortable@^10` — compatible
+- `react-burger-menu@^3.1.0` — peer dep is `react >=0.14.0`
+- `react-router-dom@^6.30.3` — compatible
+- `@vitejs/plugin-react@^5.1.3` — compatible
+- `@sentry/react@^10.38.0` — compatible
+- `zustand@^5.0.11` — compatible
+- `@types/react` and `@types/react-dom` were already at v19
+
+## CodeRabbit Review
+
+1 finding, addressed:
+
+- `@testing-library/dom` added as explicit devDependency (RTL v16 peer dep requirement)
+
+## Verification Results
+
+| Check | Result |
+|---|---|
+| `npm run build` | Pass |
+| `npm test` (29 unit tests) | Pass |
+| `npm run eslint` | Pass |
+| `npm run test:e2e` (41 E2E tests) | Pass |
+
+## Files Changed
+
+| File | Action |
+|---|---|
+| `package.json` | react, react-dom → ^19; @testing-library/react → ^16; added @testing-library/dom |
+| `package-lock.json` | Regenerated |
+| `src/index.tsx` | Removed default React import, named StrictMode import |
+| `src/App.tsx` | Removed unused React import |
+| `src/App.test.tsx` | Removed unused React import |
+| `src/components/index.tsx` | Removed React from import |
+| `src/components/SortableList/SortableList.tsx` | Removed React from import |
+| `src/components/Header/Header.tsx` | Removed unused React import |
+| `src/components/HamburgerMenu/Menu.tsx` | Removed unused React import |
+| `src/components/Button/Button.tsx` | Removed unused React import |
+| `src/components/InfoView/InfoView.tsx` | Removed unused React import |

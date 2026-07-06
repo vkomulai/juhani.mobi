@@ -1,66 +1,83 @@
-service:
-  name: aws-nodejs-typescript
+service: aws-nodejs-typescript
 plugins:
-  - serverless-webpack
   - serverless-plugin-warmup
+  - serverless-esbuild
   - serverless-domain-manager
-  - serverless-dynamodb-local
+  - serverless-dynamodb
   - serverless-offline
 
 provider:
   name: aws
-  runtime: nodejs10.x
+  runtime: nodejs20.x
   memorySize: 256
   region: us-east-1
-  usagePlan:
-    quota:
-      limit: 50000
-      offset: 2
-      period: MONTH
-    throttle:
-      burstLimit: 200
-      rateLimit: 100
+  apiGateway:
+    usagePlan:
+      quota:
+        limit: 50000
+        offset: 2
+        period: MONTH
+      throttle:
+        burstLimit: 200
+        rateLimit: 100
   environment:
     BASIC_AUTH_USER: ${ssm:/juhani.mobi/BASIC_AUTH_USER}
-    BASIC_AUTH_PASSWORD: ${ssm:/juhani.mobi/BASIC_AUTH_PASSWORD~true}
-    prod_api_host: api
-    dev_api_host: api-dev
-    RECIPES_TABLE: "Recipes-${opt:stage, self:provider.stage}"
-    CATEGORY_TABLE: "Categories-${opt:stage, self:provider.stage}"
-    LISTS_TABLE: "Lists-${opt:stage, self:provider.stage}"
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - "dynamodb:DescribeTable"
-        - "dynamodb:Query"
-        - "dynamodb:Scan"
-        - "dynamodb:GetItem"
-        - "dynamodb:PutItem"
-        - "dynamodb:UpdateItem"
-        - "dynamodb:DeleteItem"
-      Resource:
-        - arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.RECIPES_TABLE}
-        - arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.CATEGORY_TABLE}
-        - arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.LISTS_TABLE}
-    - Effect: Allow
-      Action:
-        - "lambda:InvokeFunction"
-      Resource:
-        - "Fn::Join":
-            - ":"
-            - - "arn:aws:lambda"
-              - Ref: "AWS::Region"
-              - Ref: "AWS::AccountId"
-              - "function:${self:service}-${opt:stage, self:provider.stage}-*"
+    BASIC_AUTH_PASSWORD: ${ssm:/juhani.mobi/BASIC_AUTH_PASSWORD}
+    RECIPES_TABLE: "Recipes-${sls:stage}"
+    CATEGORY_TABLE: "Categories-${sls:stage}"
+    LISTS_TABLE: "Lists-${sls:stage}"
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - "dynamodb:DescribeTable"
+            - "dynamodb:Query"
+            - "dynamodb:Scan"
+            - "dynamodb:GetItem"
+            - "dynamodb:PutItem"
+            - "dynamodb:UpdateItem"
+            - "dynamodb:DeleteItem"
+          Resource:
+            - arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.RECIPES_TABLE}
+            - arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.CATEGORY_TABLE}
+            - arn:aws:dynamodb:us-east-1:*:table/${self:provider.environment.LISTS_TABLE}
+        - Effect: Allow
+          Action:
+            - "lambda:InvokeFunction"
+          Resource:
+            - "Fn::Join":
+                - ":"
+                - - "arn:aws:lambda"
+                  - Ref: "AWS::Region"
+                  - Ref: "AWS::AccountId"
+                  - "function:${self:service}-${sls:stage}-*"
 custom:
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: true
+    target: node20
+    platform: node
+    external:
+      - scrape-it
+    exclude:
+      - '@aws-sdk/*'
+    resolveExtensions:
+      - .ts
+      - .js
+      - .mjs
   serverless-offline:
     port: 4000
+  apiHostMap:
+    dev: api-dev
+    prod: api
   customDomain:
-    domainName: "${self:provider.environment.${opt:stage, 'dev'}_api_host}.juhani.mobi"
-    certificateName: "${self:provider.environment.${opt:stage, 'dev'}_api_host}.juhani.mobi"
+    domainName: "${self:custom.apiHostMap.${sls:stage}, self:custom.apiHostMap.dev}.juhani.mobi"
+    certificateName: "${self:custom.apiHostMap.${sls:stage}, self:custom.apiHostMap.dev}.juhani.mobi"
     createRoute53Record: true
     basePath: ""
-    stage: "${opt:stage, 'dev'}"
+    stage: "${sls:stage}"
     endpointType: regional
   dynamodb:
     stages:
@@ -72,20 +89,22 @@ custom:
       seed: true
       convertEmptyValues: true
   warmup:
-    default: prod
-    folderName: _warmup
-    cleanFolder: false
-    memorySize: 128
-    name: "warmpup-juhani-api-${opt:stage, 'dev'}"
-    schedule: cron(0/5 7-22 ? * * *)
-    timeout: 20
-    prewarm: true
-    tags:
-      Application: "${self:service}"
+    default:
+      enabled: prod
+      memorySize: 128
+      name: "warmup-juhani-api-${sls:stage}"
+      events:
+        - schedule: cron(0/5 7-22 ? * * *)
+      timeout: 20
+      prewarm: true
+      tags:
+        Application: "${self:service}"
 functions:
   api:
     handler: src/server.handler
-    warmup: true
+    warmup:
+      default:
+        enabled: true
     events:
       - http:
           path: /

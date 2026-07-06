@@ -1,0 +1,36 @@
+CodeRabbit Review — Phase 10: Backend API Modernization
+
+Review scope: commits from e54b082 to a546e19 (Phase 10)
+Review date: 2026-03-11
+CodeRabbit CLI: v0.3.7
+
+Result: 7 findings — all fixed
+
+┌─────┬─────────────────────┬──────────────────────────────────────────────────────────────┬─────────────────────────────────────────────────────────────────────────┐
+│  #  │      Severity       │                           Finding                           │                                Action                                 │
+├─────┼─────────────────────┼──────────────────────────────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│ 1   │ Potential issue     │ scraper.ts: type assertion bypasses type safety              │ Fixed — added runtime validation before accessing .ingredients        │
+│     │                     │ (response.data cast without validation)                      │                                                                       │
+├─────┼─────────────────────┼──────────────────────────────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│ 2   │ Potential issue     │ .nvmrc: Node.js 20 LTS ends 2026-04-30, suggests Node 24    │ Not applicable — AWS Lambda does not support nodejs24.x runtime.      │
+│     │                     │                                                              │ nodejs20.x is the latest available Lambda runtime.                    │
+├─────┼─────────────────────┼──────────────────────────────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│ 3   │ Potential issue     │ database.ts: incomplete error message in saveCategoryData    │ Fixed — completed sentence ("failed"), used Error object,             │
+│     │                     │ ("Saving updated Category Data" missing "failed")            │ fixed function name in console.error, stringify data for logging      │
+├─────┼─────────────────────┼──────────────────────────────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│ 4   │ Potential issue     │ database.ts: typo in parameter name "ingrediends"            │ Fixed — renamed to "ingredients" in database.ts and scraper.test.ts   │
+├─────┼─────────────────────┼──────────────────────────────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│ 5   │ Potential issue     │ serverless.yml: apiHostMap missing fallback for unknown      │ Fixed — added fallback to dev: ${self:custom.apiHostMap.${sls:stage}, │
+│     │                     │ stages                                                       │ self:custom.apiHostMap.dev}                                           │
+├─────┼─────────────────────┼──────────────────────────────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│ 6   │ Refactor suggestion │ phase10-claudeplan-v2.md: Step 8 lacks specificity on        │ Fixed — updated plan doc to reflect that scrape-it was kept at v5     │
+│     │                     │ scrape-it version ("latest compatible version")               │ with rationale                                                       │
+├─────┼─────────────────────┼──────────────────────────────────────────────────────────────┼─────────────────────────────────────────────────────────────────────────┤
+│ 7   │ Potential issue     │ phase10-claudeplan-v2.md: typo "ts-lint" should be "tslint"  │ Fixed — corrected package name                                       │
+└─────┴─────────────────────┴──────────────────────────────────────────────────────────────┴─────────────────────────────────────────────────────────────────────────┘
+
+Notes:
+- Finding #2 rejected: AWS Lambda does not offer a nodejs24.x runtime. nodejs20.x is correct.
+- Findings #3 and #4 were pre-existing issues from the original code, fixed during review.
+- Finding #1 adds defense-in-depth for the scraper, though the feature is currently broken
+  due to kotikokki.net changing to client-side rendering.

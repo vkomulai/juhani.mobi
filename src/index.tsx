@@ -1,4 +1,4 @@
-import React from 'react'
+import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import {
   BrowserRouter as Router,
@@ -6,7 +6,7 @@ import {
   Routes
 } from 'react-router-dom'
 
-import { register } from 'registerServiceWorker.js'
+import { register } from 'registerServiceWorker'
 import { App } from 'App'
 import {
   initializeAnalytics,
@@ -19,13 +19,15 @@ setupShareTargetListener()
 initializeAnalytics()
 sendApplicationLoadedEvent()
 
-createRoot(document.getElementById('root')).render(
-  <Router>
-    <Routes>
-      <Route path='/l/:id' element={<App />} />
-      <Route path='/' element={<App />} />
-    </Routes>
-  </Router>
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <Router>
+      <Routes>
+        <Route path='/l/:id' element={<App />} />
+        <Route path='/' element={<App />} />
+      </Routes>
+    </Router>
+  </StrictMode>
 )
 
 register()

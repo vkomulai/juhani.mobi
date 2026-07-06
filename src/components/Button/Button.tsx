@@ -1,4 +1,3 @@
-import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useStore } from 'store'
 import { getLocaleLang } from 'i18n'
@@ -10,7 +9,13 @@ import {
 } from 'api/Analytics'
 import './Button.css'
 
-const Button = ({ enabled, labelKey, onClick }) => { // eslint-disable-line react/prop-types
+interface ButtonProps {
+  enabled: boolean
+  labelKey: string
+  onClick: () => void
+}
+
+const Button = ({ enabled, labelKey, onClick }: ButtonProps) => {
   const { t } = useTranslation()
   return (
     <button className="mui-btn mui-btn--raised app-button" disabled={!enabled} onClick={onClick}>

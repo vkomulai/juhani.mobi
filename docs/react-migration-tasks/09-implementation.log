@@ -1,0 +1,186 @@
+Phase 9: TypeScript Completion + Code Modernization
+====================================================
+
+## Summary
+
+Converted all source files from JavaScript to TypeScript with strict mode,
+migrated test runner from react-scripts/Jest to Vitest, updated ESLint to
+flat config with typescript-eslint, added React.StrictMode, and cleaned up
+Vite config by removing JS-as-JSX workarounds.
+
+## Commits (8 steps)
+
+1. `feat: add TypeScript + Vitest deps, remove react-scripts (Phase 9, Step 1)`
+2. `feat: rename source files to .ts/.tsx, create types.ts (Phase 9, Step 2)`
+3. `feat: add TypeScript annotations, enable strict mode (Phase 9, Steps 3-4)`
+4. `feat: migrate Jest to Vitest (Phase 9, Step 5)`
+5. `feat: update ESLint to flat config (Phase 9, Step 6)`
+6. `feat: wrap app in React.StrictMode (Phase 9, Step 7)`
+7. `feat: clean up Vite config, add vitest/globals types (Phase 9, Step 8)`
+
+## Packages
+
+### Added (devDependencies)
+- `vitest` — test runner (replaces react-scripts test)
+- `@vitest/coverage-v8` — coverage provider
+- `jsdom` — browser environment for vitest
+- `@typescript-eslint/parser` — TypeScript parser for ESLint
+- `@typescript-eslint/eslint-plugin` — TypeScript ESLint rules
+- `@eslint/js` — ESLint recommended config for flat config
+- `typescript-eslint` — flat config helper
+- `globals` — browser/node/serviceworker globals for ESLint
+- `@types/react` — React type definitions
+- `@types/react-dom` — ReactDOM type definitions
+- `@types/uuid` — uuid type definitions
+
+### Upgraded
+- `@testing-library/jest-dom` ^4.2.4 → ^6.9.1 (Vitest compatibility)
+
+### Removed
+- `react-scripts` ^2.1.3 — no longer needed (Vite handles dev/build, Vitest handles tests)
+- `babel-eslint` (referenced in .eslintrc, transitive dep from react-scripts)
+- `.env` (contained only `SKIP_PREFLIGHT_CHECK=true` for react-scripts)
+- `src/react-app-env.d.ts` (react-scripts reference types)
+- `cheerio` override in package.json (was only for react-scripts Jest)
+
+### Moved
+- `eslint-plugin-react` from dependencies → devDependencies
+
+## New Files
+
+| File | Purpose |
+|---|---|
+| `src/types.ts` | Shared interfaces: `ShoppingItem`, `CategoryData` |
+| `src/global.d.ts` | Type declarations: image modules (*.png, *.jpg, *.svg), *.json, `react-burger-menu`, `window.gtag`, `webkitSpeechRecognition`, `process.env` |
+| `eslint.config.js` | ESLint flat config (replaces `.eslintrc`) |
+
+## Deleted Files
+
+| File | Reason |
+|---|---|
+| `.eslintrc` | Replaced by `eslint.config.js` flat config |
+| `.env` | Only contained `SKIP_PREFLIGHT_CHECK=true` for react-scripts |
+| `src/react-app-env.d.ts` | react-scripts reference types, no longer needed |
+
+## Renamed Files (git mv, 17 source + 5 test/setup)
+
+### Source files (.js/.jsx → .ts/.tsx)
+- `src/index.js` → `src/index.tsx`
+- `src/App.js` → `src/App.tsx`
+- `src/i18n.js` → `src/i18n.ts`
+- `src/store.js` → `src/store.ts`
+- `src/api/Analytics.js` → `src/api/Analytics.ts`
+- `src/api/MarketCategories.js` → `src/api/MarketCategories.ts`
+- `src/api/SpeechRecognitionAPI.js` → `src/api/SpeechRecognitionAPI.ts`
+- `src/api/Share.js` → `src/api/Share.ts`
+- `src/api/Utils.js` → `src/api/Utils.ts`
+- `src/api/RecipeScrapeAPI.js` → `src/api/RecipeScrapeAPI.ts`
+- `src/registerServiceWorker.js` → `src/registerServiceWorker.ts`
+- `src/components/Button/Button.jsx` → `src/components/Button/Button.tsx`
+- `src/components/InfoView/InfoView.jsx` → `src/components/InfoView/InfoView.tsx`
+- `src/components/SortableList/SortableList.jsx` → `src/components/SortableList/SortableList.tsx`
+- `src/components/HamburgerMenu/Menu.jsx` → `src/components/HamburgerMenu/Menu.tsx`
+- `src/components/Header/Header.jsx` → `src/components/Header/Header.tsx`
+- `src/components/index.js` → `src/components/index.tsx`
+
+### Test files
+- `src/setupTests.js` → `src/setupTests.ts`
+- `src/App.test.js` → `src/App.test.tsx`
+- `src/store.test.js` → `src/store.test.ts`
+- `src/api/MarketCategories.test.js` → `src/api/MarketCategories.test.ts`
+- `src/api/SpeechRecognitionAPI.test.js` → `src/api/SpeechRecognitionAPI.test.ts`
+
+### Kept as .js
+- `src/custom-sw.js` — runs in service worker context, not app code
+
+## Modified Files
+
+| File | Change |
+|---|---|
+| `package.json` | New deps, removed react-scripts, updated scripts (test→vitest, eslint→src/), lint-staged targets .ts/.tsx, removed cheerio override |
+| `tsconfig.json` | Added `strict: true`, `baseUrl: "src"`, `jsx: "react-jsx"`, `types: ["vitest/globals"]` |
+| `vite.config.js` | Removed treat-js-as-jsx plugin, removed optimizeDeps JSX loader, added vitest test config block |
+| `index.html` | Entry point `/src/index.js` → `/src/index.tsx` |
+| `src/index.tsx` | Added `React.StrictMode` wrapper, `!` non-null assertion on `getElementById` |
+| `src/store.ts` | Added `StoreState` interface typing the full Zustand store, fixed `history.pushState` and `new URL()` calls for strict TS |
+| `src/api/Analytics.ts` | Typed all function params/returns, imported `ShoppingItem` |
+| `src/api/MarketCategories.ts` | Typed `Fuse<CategoryData>`, function params/returns |
+| `src/api/SpeechRecognitionAPI.ts` | Typed all records (`numbers`, `units`, `descriptive`, `knownUnrecognizedWords`), function params/returns, replaced `hasOwnProperty` with `Object.prototype.hasOwnProperty.call` |
+| `src/api/Share.ts` | Typed params with `ShoppingItem[]` |
+| `src/api/RecipeScrapeAPI.ts` | Typed return as `Promise<ShoppingItem[]>` |
+| `src/api/Utils.ts` | Typed return as `string` |
+| `src/registerServiceWorker.ts` | Added `SWConfig` interface, typed all function params |
+| `src/i18n.ts` | Cast translations JSON, typed `getLocaleLang` return |
+| `src/components/Button/Button.tsx` | Added `ButtonProps` interface, removed `eslint-disable react/prop-types` |
+| `src/components/InfoView/InfoView.tsx` | Added `InfoText` interface, typed `getInfoText` params, made return exhaustive |
+| `src/components/SortableList/SortableList.tsx` | Added `SortableItemProps` interface, typed `DragEndEvent`, removed `eslint-disable react/prop-types` |
+| `src/components/HamburgerMenu/Menu.tsx` | Typed `changeLanguage`/`getNewLanguage`, cast `versionInfo` |
+| `src/components/index.tsx` | Added `ChildrenProps` interface for `ListArea`/`Buttons` |
+| `src/setupTests.ts` | `jest.fn()` → `vi.fn()`, `@testing-library/jest-dom` → `@testing-library/jest-dom/vitest` |
+
+## Bug Fixes Found During Migration
+
+### Bug 1: Test comma expressions (SpeechRecognitionAPI.test, MarketCategories.test)
+- **Before:** `describe('...', () => it('test1', ...), it('test2', ...))` — comma-separated `it()` calls inside arrow function describe blocks
+- **After:** `describe('...', () => { it('test1', ...); it('test2', ...) })` — proper block bodies
+- **Impact:** Tests ran but the describe/it nesting was syntactically misleading
+
+### Bug 2: Missing assertions (SpeechRecognitionAPI.test)
+- **Before:** `expect(isQuantityWord('kilo'))` — bare expect without matcher, always passes
+- **After:** `expect(isQuantityWord('kilo')).toBeTruthy()` — actual assertion
+
+### Bug 3: Wrong function in test (SpeechRecognitionAPI.test, isAdjectviceWord describe)
+- **Before:** `expect(isQuantityWord('kermainen'))` and `expect(isQuantityWord('juustoinen'))` — testing quantity function for adjective words
+- **After:** `expect(isAdjectiveWord('kermainen')).toBeTruthy()` and `expect(isAdjectiveWord('juustoinen')).toBeTruthy()`
+- **Impact:** These tests were silently passing because bare `expect()` without a matcher never fails
+
+### Bug 4: Missing `collected` field in test data (MarketCategories.test)
+- **Before:** `[{ name: 'banaani' }, ...]` — missing required `collected` field
+- **After:** `[{ name: 'banaani', collected: false }, ...]` — matches `ShoppingItem` interface
+- **Impact:** Only caught by TypeScript strict mode; JavaScript/Jest accepted the incomplete objects
+
+## Verification Results
+
+| Check | Result |
+|---|---|
+| `tsc --noEmit` | 0 errors (strict mode) |
+| `npm test` (vitest) | 4 files, 29 tests passing |
+| `npm run eslint` | clean |
+| `npm run csslint` | clean |
+| `vite build` | success |
+| `npm run test:e2e` | 41/41 Playwright tests passing |
+
+## Config Changes
+
+### tsconfig.json
+```json
+{
+  "compilerOptions": {
+    "strict": true,
+    "baseUrl": "src",
+    "jsx": "react-jsx",
+    "types": ["vitest/globals"]
+  }
+}
+```
+
+### package.json scripts
+```json
+{
+  "test": "vitest run",
+  "test:watch": "vitest",
+  "test-ci": "vitest run --coverage",
+  "eslint": "eslint src/",
+  "eslint-fix": "eslint src/ --fix"
+}
+```
+
+### vite.config.js test block
+```js
+test: {
+  globals: true,
+  environment: 'jsdom',
+  setupFiles: './src/setupTests.ts',
+  include: ['src/**/*.test.{ts,tsx}']
+}
+```

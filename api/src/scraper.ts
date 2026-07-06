@@ -1,19 +1,19 @@
-import * as scrapeIt from 'scrape-it'
-import { Ingredient } from './types' 
+import scrapeIt from 'scrape-it'
+import { Ingredient } from './types'
 
 const kotikokkiMapping = {
   ingredients: {
-    listItem: ".ingredient", 
+    listItem: '.ingredient',
     data: {
       amount: {
-        selector: "span",
+        selector: 'span',
         eq: 0,
-        convert: (val: String) => val ? val : '-'
+        convert: (val: string) => val ? val : '-'
       },
       name: {
-        selector: ".name span",
+        selector: '.name span',
         eq: 0,
-        convert: (val: String) => val ? val : '-'
+        convert: (val: string) => val ? val : '-'
       }
     }
   }
@@ -21,13 +21,18 @@ const kotikokkiMapping = {
 
 //  SOPPA365: https://www.soppa365.fi/reseptit/liha-juhli-ja-nauti-kastikkeet-tahnat-ja-marinadit/lihapullapasta-uunissa
 //  VALIO: https://www.valio.fi/reseptit/poropizza/
-export const scrapeRecipe = async (url: String) : Promise<Ingredient[]> => {
+export const scrapeRecipe = async (url: string): Promise<Ingredient[]> => {
   let dataMapping
   if (url.startsWith('https://www.kotikokki.net')) {
     dataMapping = kotikokkiMapping
   }
   if (dataMapping) {
-    return await scrapeIt(url, dataMapping).then((response: any) => response.data.ingredients)
+    const response = await scrapeIt(url, dataMapping)
+    const data = response.data as { ingredients?: Ingredient[] }
+    if (!data.ingredients || !Array.isArray(data.ingredients)) {
+      throw new Error('Failed to scrape ingredients from the page')
+    }
+    return data.ingredients
   } else {
     throw 'unknown source'
   }

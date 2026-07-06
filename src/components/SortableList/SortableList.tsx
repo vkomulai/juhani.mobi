@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useStore } from 'store'
 import {
@@ -12,7 +12,8 @@ import {
   TouchSensor,
   MouseSensor,
   useSensor,
-  useSensors
+  useSensors,
+  DragEndEvent
 } from '@dnd-kit/core'
 import {
   SortableContext,
@@ -20,11 +21,17 @@ import {
   useSortable
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { ShoppingItem } from 'types'
 
 import './SortableList.css'
 
-/* eslint-disable react/prop-types */
-const SortableItem = ({ item, onCollected, onRemove }) => {
+interface SortableItemProps {
+  item: ShoppingItem
+  onCollected: (item: ShoppingItem) => void
+  onRemove: (item: ShoppingItem) => void
+}
+
+const SortableItem = ({ item, onCollected, onRemove }: SortableItemProps) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: item.name
   })
@@ -45,7 +52,6 @@ const SortableItem = ({ item, onCollected, onRemove }) => {
     </li>
   )
 }
-/* eslint-enable react/prop-types */
 
 export function SortableList() {
   const { id } = useParams()
@@ -66,17 +72,17 @@ export function SortableList() {
     useSensor(MouseSensor, { activationConstraint: { delay: 500, tolerance: 5 } })
   )
 
-  const handleRemove = (item) => {
+  const handleRemove = (item: ShoppingItem) => {
     sendItemRemovedEvent()
     removeItem(item)
   }
 
-  const handleCollected = (item) => {
+  const handleCollected = (item: ShoppingItem) => {
     sendItemCollectedEvent()
     collectedItemPressed(item)
   }
 
-  const handleDragEnd = (event) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
     if (over && active.id !== over.id) {
       sendItemOrderChangedEvent()
