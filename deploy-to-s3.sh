@@ -13,7 +13,7 @@ echo '{"commit":"'$COMMIT'", "buildDate":"'$DATE'"}' > src/versionInfo.json
 # Build the thing
 npm run build
 cd build/
-cp src/versionInfo.json build/versionInfo.json
+cp ../src/versionInfo.json ./versionInfo.json
 # TODO:Force flag to invalidation
 echo "--- [S3]         Synchronizing website to AWS S3..."
 aws s3 sync . s3://$S3_BUCKET

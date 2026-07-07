@@ -24,7 +24,7 @@ createRoot(document.getElementById('root')!).render(
     <Router>
       <Routes>
         <Route path='/l/:id' element={<App />} />
-        <Route path='/' element={<App />} />
+        <Route path='*' element={<App />} />
       </Routes>
     </Router>
   </StrictMode>
