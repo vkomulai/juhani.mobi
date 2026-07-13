@@ -16,9 +16,11 @@ cd build/
 cp ../src/versionInfo.json ./versionInfo.json
 # TODO:Force flag to invalidation
 echo "--- [S3]         Synchronizing website to AWS S3..."
-aws s3 sync . s3://$S3_BUCKET
+aws s3 sync --delete . s3://$S3_BUCKET
 # Force zero caching on index.html
 aws s3 cp s3://$S3_BUCKET/index.html s3://$S3_BUCKET/index.html --metadata-directive REPLACE --cache-control max-age=0
+# Force zero caching on the service worker, otherwise clients stay stuck on an old one
+aws s3 cp s3://$S3_BUCKET/service-worker.js s3://$S3_BUCKET/service-worker.js --metadata-directive REPLACE --cache-control "no-cache" --content-type "application/javascript"
 echo "--- [S3]         Website published to AWS S3"
 echo "--- [S3]         Setting content type for index.html to text/html; charset=utf-8"
 aws s3 cp index.html  s3://www.juhani.mobi/  --content-type "text/html; charset=utf-8"

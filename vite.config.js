@@ -42,9 +42,10 @@ export default defineConfig({
     VitePWA({
       registerType: 'prompt',
       injectRegister: null,
+      filename: 'service-worker.js',
       workbox: {
         skipWaiting: false,
-        clientsClaim: false
+        clientsClaim: true
       },
       manifest: {
         name: 'Juhani.mobi',
