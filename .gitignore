@@ -2,6 +2,9 @@
 .vscode
 .DS_Store
 
+
+src/versionInfo.*
+
 # Migration log file
 docs/migration-log.md
 
